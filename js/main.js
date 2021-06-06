@@ -6,7 +6,7 @@ const randomInteger = function (min, max) {
   return Math.floor(rand);
 };
 
-const checkLength = function (str, maxLen) {
+const checkMaxLength = function (str, maxLen) {
   if (str.length <= maxLen) {
     return true;
   }
@@ -14,4 +14,4 @@ const checkLength = function (str, maxLen) {
 };
 
 randomInteger(1, 3);
-checkLength('Keks', 4);
+checkMaxLength('Keks', 4);
