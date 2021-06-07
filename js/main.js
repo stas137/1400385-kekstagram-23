@@ -1,17 +1,17 @@
-const randomInteger = function (min, max) {
+const getRandomIntegerRange = function (min, max) {
   if (min >= max) {
-    return;
+    return false;
   }
-  const rand = min + Math.random() * (max + 1 - min);
-  return Math.floor(rand);
+  const randomInteger = min + Math.random() * (max + 1 - min);
+  return Math.floor(randomInteger);
 };
 
-const checkMaxLength = function (str, maxLen) {
-  if (str.length <= maxLen) {
+const checkMaxLength = function (str, length) {
+  if (str.length <= length) {
     return true;
   }
-  return false;
+  return new Error('Длина строки превышает максимально допустимую длину');
 };
 
-randomInteger(1, 3);
+getRandomIntegerRange(1, 3);
 checkMaxLength('Keks', 4);
