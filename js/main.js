@@ -1,4 +1,4 @@
-const getRandomIntegerRange = function (min, max) {
+const getRandomIntegerFromRange = function (min, max) {
   if (min >= max) {
     return new Error('Значение "от" должно быть меньше значения "до"');
   }
@@ -13,5 +13,5 @@ const checkMaxLength = function (str, length) {
   return new Error('Длина строки превышает максимально допустимую длину');
 };
 
-getRandomIntegerRange(1, 3);
+getRandomIntegerFromRange(1, 3);
 checkMaxLength('Keks', 4);
