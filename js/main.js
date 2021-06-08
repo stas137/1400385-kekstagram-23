@@ -42,6 +42,7 @@ const AUTHOR_NAMES = [
 const getRandomArrayElement = (elements) => (elements[getRandomIntegerFromRange(0, elements.length-1)]);
 const getIdDescription = (index) => (index + 1);
 const getUrl = (index) => (`photos/${index+1}.img`);
+const getDescription = () => ('Самая лучшая фотография');
 const getRandomLikes = (min, max) => (getRandomIntegerFromRange(min, max));
 
 const setIdComments = new Set();
@@ -70,7 +71,7 @@ const getComments = (count) => (new Array(count).fill(null).map(()=>createCommen
 const createPhotoDescription = (index) => (
   { id: getIdDescription(index),
     url: getUrl(index),
-    description: 'Самая лучшая фотография',
+    description: getDescription(),
     likes: getRandomLikes(LIKES_MIN_COUNT, LIKES_MAX_COUNT),
     comments: getComments(getRandomIntegerFromRange(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT)),
   }
