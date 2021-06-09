@@ -19,8 +19,17 @@ checkMaxLength('Keks', 4);
 const PHOTO_DESCRIPTION_COUNT = 25;
 const LIKES_MIN_COUNT = 15;
 const LIKES_MAX_COUNT = 200;
+const AVATAR_MIN_NUMBER = 1;
+const AVATAR_MAX_NUMBER = 6;
 const COMMENTS_MIN_COUNT = 3;
 const COMMENTS_MAX_COUNT = 9;
+
+const DESCRIPTION_TEXTS = [
+  'Самая красивая фотография',
+  'Лучшее фото',
+  'Хорошая фотография',
+  'Я могу лучше',
+];
 
 const MESSAGE_TEXTS = [
   'Всё отлично!',
@@ -41,8 +50,8 @@ const AUTHOR_NAMES = [
 
 const getRandomArrayElement = (elements) => (elements[getRandomIntegerFromRange(0, elements.length-1)]);
 const getIdDescription = (index) => (index + 1);
-const getUrl = (index) => (`photos/${index+1}.img`);
-const getDescription = () => ('Самая лучшая фотография');
+const getUrl = (index) => (`photos/${index + 1}.img`);
+const getDescription = () => (getRandomArrayElement(DESCRIPTION_TEXTS));
 const getRandomLikes = (min, max) => (getRandomIntegerFromRange(min, max));
 
 const setIdComments = new Set();
@@ -55,8 +64,8 @@ const getIdComment = () => {
   return id;
 };
 
-const getAvatar = () => (`img/avatar-${getRandomIntegerFromRange(1, 6)}.svg`);
-const getMessages = (count) => (new Array(count).fill(null).map(()=>getRandomArrayElement(MESSAGE_TEXTS)));
+const getAvatar = () => (`img/avatar-${getRandomIntegerFromRange(AVATAR_MIN_NUMBER, AVATAR_MAX_NUMBER)}.svg`);
+const getMessages = (count) => (new Array(count).fill(null).map(() => getRandomArrayElement(MESSAGE_TEXTS)));
 
 const createComment = () => (
   { id: getIdComment(),
@@ -66,7 +75,7 @@ const createComment = () => (
   }
 );
 
-const getComments = (count) => (new Array(count).fill(null).map(()=>createComment()));
+const getComments = (count) => (new Array(count).fill(null).map(() => createComment()));
 
 const createPhotoDescription = (index) => (
   { id: getIdDescription(index),
@@ -77,5 +86,5 @@ const createPhotoDescription = (index) => (
   }
 );
 
-const photoDescriptions = new Array(PHOTO_DESCRIPTION_COUNT).fill(null).map((currentValue, index)=>createPhotoDescription(index));
-photoDescriptions;
+const photoDescriptions = () => (new Array(PHOTO_DESCRIPTION_COUNT).fill(null).map((currentValue, index) => createPhotoDescription(index)));
+photoDescriptions();
