@@ -1,8 +1,8 @@
 const uploadImg = document.querySelector('.img-upload');
 
-const editHashtags = () => {
+const editDescription = () => {
   const textHashtags = uploadImg.querySelector('.text__hashtags');
-  const textDescription = uploadImg.querySelector('.text__description');
+  const textComment = uploadImg.querySelector('.text__description');
 
   textHashtags.addEventListener('input', () => {
     if (textHashtags.validationMessage !== '') {
@@ -11,12 +11,12 @@ const editHashtags = () => {
     }
   });
 
-  textDescription.addEventListener('input', () => {
-    if (textDescription.validationMessage !== '') {
-      textDescription.setCustomValidity('');
-      textDescription.style.outlineColor = 'black';
+  textComment.addEventListener('input', () => {
+    if (textComment.validationMessage !== '') {
+      textComment.setCustomValidity('');
+      textComment.style.outlineColor = 'black';
     }
   });
 };
 
-export {editHashtags};
+export {editDescription};
