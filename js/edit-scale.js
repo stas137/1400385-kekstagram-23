@@ -8,13 +8,13 @@ const EFFECTS_LIST = {
   'effect-phobos': 'effects__preview--phobos',
   'effect-heat': 'effects__preview--heat',
 };
-
-const uploadPreview = document.querySelector('.img-upload__preview');
+const uploadImg = document.querySelector('.img-upload');
+const uploadPreview = uploadImg.querySelector('.img-upload__preview');
 
 const editScale = () => {
-  const controlSmaller = document.querySelector('.scale__control--smaller');
-  const controlBigger = document.querySelector('.scale__control--bigger');
-  const controlValue = document.querySelector('.scale__control--value');
+  const controlSmaller = uploadImg.querySelector('.scale__control--smaller');
+  const controlBigger = uploadImg.querySelector('.scale__control--bigger');
+  const controlValue = uploadImg.querySelector('.scale__control--value');
 
   controlSmaller.addEventListener('click', () => {
     const number = parseInt(controlValue.value.slice(0, controlValue.value.length - 1), 10);
@@ -34,9 +34,9 @@ const editScale = () => {
 };
 
 const effectsRadioAddEventHandler = (item) => {
-  item.addEventListener('click', () => {
+  const radioAddEventHandler = () => {
     const effectsItemChildren = item.children;
-    const uploadEffectLevel = document.querySelector('.img-upload__effect-level');
+    const uploadEffectLevel = uploadImg.querySelector('.img-upload__effect-level');
     const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
     effectLevelValue.value = '100';
 
@@ -56,14 +56,16 @@ const effectsRadioAddEventHandler = (item) => {
     }
 
     uploadPreview.classList.add(EFFECTS_LIST[effectsItemChildren[0].id]);
-  });
+  };
+
+  item.addEventListener('click', radioAddEventHandler);
 };
 
 const editEffects = () => {
   const effectsList = document.querySelector('.effects__list');
   const effectsItem = effectsList.children;
 
-  for (let index=0; index < effectsItem.length; index++){
+  for (let index = 0; index < effectsItem.length; index++){
     effectsRadioAddEventHandler(effectsItem[index]);
   }
 };

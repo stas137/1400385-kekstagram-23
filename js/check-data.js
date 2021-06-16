@@ -55,7 +55,7 @@ const checkHashtagsFirstChar = (value) => {
   return false;
 };
 
-const checkHashtagsCharDiez = (value) => {
+const checkHashtagsCharSharp = (value) => {
   for (let index = 0; index < value.length; index++){
     if ((value[index][0] === '#') && (value[index].length === 1)) {
       return true;
@@ -98,7 +98,7 @@ const checkHashtagsValidity = (value) => {
     invalidities.push('Есть хэштеги начинающиеся не с символа "#"');
   }
 
-  if (checkHashtagsCharDiez(hashtags)) {
+  if (checkHashtagsCharSharp(hashtags)) {
     invalidities.push('Есть хэштеги состоящие только из символа "#"');
   }
 
@@ -120,8 +120,8 @@ const checkDescriptionValidity = (value) => {
 };
 
 const checkData = () => {
-  const submit = document.querySelector('.img-upload__submit');
-  submit.addEventListener('click', () => {
+  const uploadSubmit = document.querySelector('.img-upload__submit');
+  uploadSubmit.addEventListener('click', () => {
     const textHashtags = document.querySelector('.text__hashtags');
     const textDescription = document.querySelector('.text__description');
     const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');

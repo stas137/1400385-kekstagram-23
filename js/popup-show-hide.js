@@ -1,17 +1,17 @@
 const ESCAPE_CODE = 'Escape';
 
-const getData = () => {
-  const uploadFile = document.querySelector('#upload-file');
-  const uploadCancel = document.querySelector('#upload-cancel');
-  const formElement = document.querySelector('.img-upload__overlay');
+const popupShowHide = () => {
   const bodyElement = document.querySelector('body');
+  const uploadFile = bodyElement.querySelector('#upload-file');
+  const uploadCancel = bodyElement.querySelector('#upload-cancel');
+  const formElement = bodyElement.querySelector('.img-upload__overlay');
 
   uploadFile.addEventListener('focus', () => {
     uploadFile.value = '';
   });
 
   uploadFile.addEventListener('change', () => {
-    const effectsList = document.querySelector('.effects__list');
+    const effectsList = bodyElement.querySelector('.effects__list');
     const effectsItem = effectsList.children;
     effectsItem[0].click();
 
@@ -25,8 +25,8 @@ const getData = () => {
   });
 
   document.addEventListener('keydown', (evt) => {
-    const textHashtags = document.querySelector('.text__hashtags');
-    const textDescription = document.querySelector('.text__description');
+    const textHashtags = bodyElement.querySelector('.text__hashtags');
+    const textDescription = bodyElement.querySelector('.text__description');
     if ((evt.code === ESCAPE_CODE) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
       formElement.classList.add('hidden');
       bodyElement.classList.remove('modal-open');
@@ -34,4 +34,4 @@ const getData = () => {
   });
 };
 
-export {getData};
+export {popupShowHide};
