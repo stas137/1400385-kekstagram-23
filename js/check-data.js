@@ -13,15 +13,15 @@ const getHashtagsLowerCase = (value) => {
 };
 
 const isHashtagsCorrect = (value) => {
-  const hashtagsWithoutDiez = value.map((item) => {
+  const hashtagsWithoutSharp = value.map((item) => {
     if (item[0] === '#'){
       return item.slice(1, item.length);
     }
     return item;
   });
 
-  for (let index = 0; index < hashtagsWithoutDiez.length; index++){
-    if (hashtagsWithoutDiez[index].match(REG_EXP)) {
+  for (let index = 0; index < hashtagsWithoutSharp.length; index++){
+    if (hashtagsWithoutSharp[index].match(REG_EXP)) {
       return false;
     }
   }
@@ -120,23 +120,27 @@ const checkDescriptionValidity = (value) => {
 };
 
 const checkData = () => {
-  const uploadSubmit = document.querySelector('.img-upload__submit');
-  uploadSubmit.addEventListener('click', () => {
-    const textHashtags = document.querySelector('.text__hashtags');
-    const textDescription = document.querySelector('.text__description');
+  const uploadImg = document.querySelector('.img-upload');
+  const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
+  const textHashtags = uploadImg.querySelector('.text__hashtags');
+  const textDescription = uploadImg.querySelector('.text__description');
+
+  const itemAddEventHandler = () => {
     const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
     const customDescriptionValidityMessage = checkDescriptionValidity(textDescription.value).join('\n');
 
-    if (customHashtagsValidityMessage) {
-      textHashtags.setCustomValidity(customHashtagsValidityMessage);
-      textHashtags.style.outlineColor = 'red';
-    }
+    const itemSetCustomValidity = (item, message) => {
+      if (message) {
+        item.setCustomValidity(message);
+        item.style.outlineColor = 'red';
+      }
+    };
 
-    if (customDescriptionValidityMessage) {
-      textDescription.setCustomValidity(customDescriptionValidityMessage);
-      textDescription.style.outlineColor = 'red';
-    }
-  });
+    itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
+    itemSetCustomValidity(textDescription, customDescriptionValidityMessage);
+  };
+
+  uploadSubmit.addEventListener('click', itemAddEventHandler);
 };
 
 export {checkData};

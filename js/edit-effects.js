@@ -1,4 +1,4 @@
-const LEVEL_VALUE = '100';
+const LEVEL_VALUE = 100;
 const EFFECTS_LIST = {
   'effect-none': 'effects__preview--none',
   'effect-chrome': 'effects__preview--chrome',
@@ -12,11 +12,11 @@ const uploadImg = document.querySelector('.img-upload');
 const uploadPreview = uploadImg.querySelector('.img-upload__preview');
 
 const effectsRadioAddEventHandler = (item) => {
-  const radioAddEventHandler = () => {
+  const radioEventHandler = () => {
     const effectsItemChildren = item.children;
     const uploadEffectLevel = uploadImg.querySelector('.img-upload__effect-level');
     const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
-    effectLevelValue.value = LEVEL_VALUE;
+    effectLevelValue.value = String(LEVEL_VALUE);
 
     if (effectsItemChildren[0].id === 'effect-none') {
       uploadEffectLevel.classList.add('hidden');
@@ -36,7 +36,7 @@ const effectsRadioAddEventHandler = (item) => {
     uploadPreview.classList.add(EFFECTS_LIST[effectsItemChildren[0].id]);
   };
 
-  item.addEventListener('click', radioAddEventHandler);
+  item.addEventListener('click', radioEventHandler);
 };
 
 const editEffects = () => {
