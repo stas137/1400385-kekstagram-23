@@ -1,4 +1,5 @@
 const ESCAPE_CODE = 'Escape';
+const ESC_CODE = 'Esc';
 
 const popupShowHide = () => {
   const bodyElement = document.querySelector('body');
@@ -27,7 +28,7 @@ const popupShowHide = () => {
   document.addEventListener('keydown', (evt) => {
     const textHashtags = bodyElement.querySelector('.text__hashtags');
     const textDescription = bodyElement.querySelector('.text__description');
-    if ((evt.code === ESCAPE_CODE) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
+    if (((evt.code === ESCAPE_CODE) || (evt.code === ESC_CODE)) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
       formElement.classList.add('hidden');
       bodyElement.classList.remove('modal-open');
     }

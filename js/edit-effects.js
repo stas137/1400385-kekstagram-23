@@ -43,7 +43,7 @@ const editEffects = () => {
   const effectsList = document.querySelector('.effects__list');
   const effectsItem = effectsList.children;
 
-  for (let index = 0; index < effectsItem.length; index++){
+  for (let index = 0; index < effectsItem.length; index++) {
     effectsRadioAddEventHandler(effectsItem[index]);
   }
 };

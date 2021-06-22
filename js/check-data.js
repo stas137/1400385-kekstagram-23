@@ -14,13 +14,13 @@ const getHashtagsLowerCase = (value) => {
 
 const isHashtagsCorrect = (value) => {
   const hashtagsWithoutSharp = value.map((item) => {
-    if (item[0] === '#'){
+    if (item[0] === '#') {
       return item.slice(1, item.length);
     }
     return item;
   });
 
-  for (let index = 0; index < hashtagsWithoutSharp.length; index++){
+  for (let index = 0; index < hashtagsWithoutSharp.length; index++) {
     if (hashtagsWithoutSharp[index].match(REG_EXP)) {
       return false;
     }
@@ -29,8 +29,8 @@ const isHashtagsCorrect = (value) => {
 };
 
 const checkHashtagsMaxLength = (value) => {
-  for (let index = 0; index < value.length; index++){
-    if (value[index].length > HASHTAG_MAX_LENGTH){
+  for (let index = 0; index < value.length; index++) {
+    if (value[index].length > HASHTAG_MAX_LENGTH) {
       return true;
     }
   }
@@ -38,8 +38,8 @@ const checkHashtagsMaxLength = (value) => {
 };
 
 const checkHashtagsMinLength = (value) => {
-  for (let index = 0; index < value.length; index++){
-    if (value[index].length < HASHTAG_MIN_LENGTH){
+  for (let index = 0; index < value.length; index++) {
+    if (value[index].length < HASHTAG_MIN_LENGTH) {
       return true;
     }
   }
@@ -47,8 +47,8 @@ const checkHashtagsMinLength = (value) => {
 };
 
 const checkHashtagsFirstChar = (value) => {
-  for (let index = 0; index < value.length; index++){
-    if (value[index][0] !== '#'){
+  for (let index = 0; index < value.length; index++) {
+    if (value[index][0] !== '#') {
       return true;
     }
   }
@@ -56,7 +56,7 @@ const checkHashtagsFirstChar = (value) => {
 };
 
 const checkHashtagsCharSharp = (value) => {
-  for (let index = 0; index < value.length; index++){
+  for (let index = 0; index < value.length; index++) {
     if ((value[index][0] === '#') && (value[index].length === 1)) {
       return true;
     }
@@ -119,6 +119,13 @@ const checkDescriptionValidity = (value) => {
   return invalidities;
 };
 
+const itemSetCustomValidity = (item, message) => {
+  if (message) {
+    item.setCustomValidity(message);
+    item.style.outlineColor = 'red';
+  }
+};
+
 const checkData = () => {
   const uploadImg = document.querySelector('.img-upload');
   const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
@@ -128,13 +135,6 @@ const checkData = () => {
   const itemAddEventHandler = () => {
     const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
     const customDescriptionValidityMessage = checkDescriptionValidity(textDescription.value).join('\n');
-
-    const itemSetCustomValidity = (item, message) => {
-      if (message) {
-        item.setCustomValidity(message);
-        item.style.outlineColor = 'red';
-      }
-    };
 
     itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
     itemSetCustomValidity(textDescription, customDescriptionValidityMessage);
