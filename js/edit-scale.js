@@ -29,4 +29,4 @@ const editScale = () => {
   uploadScale.addEventListener('click', (evt) => { setScale(evt); });
 };
 
-export {editScale};
+editScale();
