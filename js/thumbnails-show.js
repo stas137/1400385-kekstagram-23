@@ -2,12 +2,12 @@ import {generateData} from './generate-data.js';
 
 const bodyElement = document.body;
 const pictureTemplate = bodyElement.querySelector('#picture').content.querySelector('.picture');
-const pictureList = bodyElement.querySelector('.pictures');
+const picturesList = bodyElement.querySelector('.pictures');
 
-const pictureGenerate = generateData();
+const picturesGenerate = generateData();
 const pictureListFragment = document.createDocumentFragment();
 
-pictureGenerate.forEach((picture) => {
+picturesGenerate.forEach((picture) => {
   const pictureElement = pictureTemplate.cloneNode(true);
   pictureElement.querySelector('.picture__img').src = picture.url;
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
@@ -15,4 +15,4 @@ pictureGenerate.forEach((picture) => {
   pictureListFragment.appendChild(pictureElement);
 });
 
-pictureList.appendChild(pictureListFragment);
+picturesList.appendChild(pictureListFragment);
