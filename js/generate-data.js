@@ -34,7 +34,7 @@ const AUTHOR_NAMES = [
 
 const getRandomArrayElement = (elements) => (elements[getRandomIntegerFromRange(0, elements.length-1)]);
 const getIdDescription = (index) => (index + 1);
-const getUrl = (index) => (`photos/${index + 1}.img`);
+const getUrl = (index) => (`photos/${index + 1}.jpg`);
 const getDescription = () => (getRandomArrayElement(DESCRIPTION_TEXTS));
 const getRandomLikes = (min, max) => (getRandomIntegerFromRange(min, max));
 const getAvatar = () => (`img/avatar-${getRandomIntegerFromRange(AVATAR_MIN_NUMBER, AVATAR_MAX_NUMBER)}.svg`);
