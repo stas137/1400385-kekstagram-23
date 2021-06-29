@@ -12,7 +12,7 @@ const commentsCount = bodyElement.querySelector('.comments-count');
 const socialCaption = bodyElement.querySelector('.social__caption');
 const socialComments = bodyElement.querySelector('.social__comments');
 
-const closePictureFull = () => {
+const pictureCloseFull = () => {
   bodyElement.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
   socialCommentCount.classList.remove('hidden');
@@ -23,12 +23,12 @@ const closePictureFull = () => {
 const onEscKeyDown = (evt) => {
   if (isEscEvent(evt.code)) {
     evt.preventDefault();
-    closePictureFull();
+    pictureCloseFull();
   }
 };
 
 function removeEventHandler () {
-  bigPictureCancel.removeEventListener('click', closePictureFull);
+  bigPictureCancel.removeEventListener('click', pictureCloseFull);
   bodyElement.removeEventListener('keydown', onEscKeyDown);
 }
 
@@ -62,7 +62,7 @@ const pictureShowFull = (picture) => {
   socialCommentCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 
-  bigPictureCancel.addEventListener('click', closePictureFull);
+  bigPictureCancel.addEventListener('click', pictureCloseFull);
   bodyElement.addEventListener('keydown', onEscKeyDown);
 };
 
