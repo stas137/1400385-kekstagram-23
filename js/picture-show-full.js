@@ -24,7 +24,6 @@ const onEscKeyDown = (evt) => {
   if (isEscEvent(evt.code)) {
     evt.preventDefault();
     closePictureFull();
-    removeEventHandler();
   }
 };
 

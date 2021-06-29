@@ -35,7 +35,6 @@ const popupShowHide = () => {
     if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
       evt.preventDefault();
       popupClose();
-      removeEventHandler();
     }
   };
 
