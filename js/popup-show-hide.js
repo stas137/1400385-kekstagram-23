@@ -1,10 +1,13 @@
-const ESCAPE_CODE = 'Escape';
+/* eslint-disable no-use-before-define */
+import {isEscEvent} from './utils.js';
 
 const popupShowHide = () => {
   const bodyElement = document.querySelector('body');
   const uploadFile = bodyElement.querySelector('#upload-file');
   const uploadCancel = bodyElement.querySelector('#upload-cancel');
   const formElement = bodyElement.querySelector('.img-upload__overlay');
+  const textHashtags = bodyElement.querySelector('.text__hashtags');
+  const textDescription = bodyElement.querySelector('.text__description');
 
   uploadFile.addEventListener('focus', () => {
     uploadFile.value = '';
@@ -17,21 +20,29 @@ const popupShowHide = () => {
 
     formElement.classList.remove('hidden');
     bodyElement.classList.add('modal-open');
+
+    uploadCancel.addEventListener('click', popupClose);
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
-  uploadCancel.addEventListener('click', () => {
+  const popupClose = () => {
     formElement.classList.add('hidden');
     bodyElement.classList.remove('modal-open');
-  });
+    removeEventHandler();
+  };
 
-  document.addEventListener('keydown', (evt) => {
-    const textHashtags = bodyElement.querySelector('.text__hashtags');
-    const textDescription = bodyElement.querySelector('.text__description');
-    if ((evt.code === ESCAPE_CODE) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
-      formElement.classList.add('hidden');
-      bodyElement.classList.remove('modal-open');
+  const onEscKeyDown = (evt) => {
+    if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
+      evt.preventDefault();
+      popupClose();
+      removeEventHandler();
     }
-  });
+  };
+
+  function removeEventHandler () {
+    uploadCancel.removeEventListener('click', popupClose);
+    document.removeEventListener('keydown', onEscKeyDown);
+  }
 };
 
 export {popupShowHide};

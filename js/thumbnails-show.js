@@ -21,7 +21,7 @@ picturesGenerate.forEach((picture) => {
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
   pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
 
-  pictureElement.addEventListener('click', (evt) => { addEventHandler(evt, picture);} );
+  pictureElement.addEventListener('click', (evt) => { addEventHandler(evt, picture); });
 
   pictureListFragment.appendChild(pictureElement);
 });

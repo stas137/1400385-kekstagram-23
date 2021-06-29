@@ -1,4 +1,5 @@
-const ESCAPE_CODE = 'Escape';
+/* eslint-disable no-use-before-define */
+import {isEscEvent} from './utils.js';
 
 const bodyElement = document.body;
 const bigPicture = bodyElement.querySelector('.big-picture');
@@ -11,6 +12,27 @@ const commentsCount = bodyElement.querySelector('.comments-count');
 const socialCaption = bodyElement.querySelector('.social__caption');
 const socialComments = bodyElement.querySelector('.social__comments');
 
+const closePictureFull = () => {
+  bodyElement.classList.remove('modal-open');
+  bigPicture.classList.add('hidden');
+  socialCommentCount.classList.remove('hidden');
+  commentsLoader.classList.remove('hidden');
+  removeEventHandler();
+};
+
+const onEscKeyDown = (evt) => {
+  if (isEscEvent(evt.code)) {
+    evt.preventDefault();
+    closePictureFull();
+    removeEventHandler();
+  }
+};
+
+function removeEventHandler () {
+  bigPictureCancel.removeEventListener('click', closePictureFull);
+  bodyElement.removeEventListener('keydown', onEscKeyDown);
+}
+
 const pictureShowFull = (picture) => {
   bodyElement.classList.add('modal-open');
   bigPicture.classList.remove('hidden');
@@ -19,40 +41,30 @@ const pictureShowFull = (picture) => {
   commentsCount.textContent = picture.comments.length;
   socialCaption.textContent = picture.description;
 
-  for (let index = socialComments.children.length - 1; index >= 0; index--) {
-    socialComments.children[index].remove();
+  if (socialComments.children.length > 0) {
+    for (let index = socialComments.children.length - 1; index >= 0; index--) {
+      socialComments.children[index].remove();
+    }
   }
 
+  const element = (index) => `<li class="social__comment">
+  <img
+      class="social__picture"
+      src="${picture.comments[index].avatar}"
+      alt="${picture.comments[index].name}"
+      width="35" height="35">
+  <p class="social__text">${picture.comments[index].message}</p>
+</li>`;
+
   for (let index = 0; index < picture.comments.length; index++) {
-    const element = `<li class="social__comment">
-    <img
-        class="social__picture"
-        src="${picture.comments[index].avatar}"
-        alt="${picture.comments[index].name}"
-        width="35" height="35">
-    <p class="social__text">${picture.comments[index].message}</p>
-  </li>`;
-    socialComments.insertAdjacentHTML('beforeend', element);
+    socialComments.insertAdjacentHTML('beforeend', element(index));
   }
 
   socialCommentCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
+
+  bigPictureCancel.addEventListener('click', closePictureFull);
+  bodyElement.addEventListener('keydown', onEscKeyDown);
 };
-
-bigPictureCancel.addEventListener('click', () => {
-  bodyElement.classList.remove('modal-open');
-  bigPicture.classList.add('hidden');
-  socialCommentCount.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
-});
-
-bodyElement.addEventListener('keydown', (evt) => {
-  if (evt.code === ESCAPE_CODE) {
-    bodyElement.classList.remove('modal-open');
-    bigPicture.classList.add('hidden');
-    socialCommentCount.classList.remove('hidden');
-    commentsLoader.classList.remove('hidden');
-  }
-});
 
 export {pictureShowFull};
