@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import {isEscEvent} from './utils.js';
 
 const bodyElement = document.body;
@@ -12,25 +11,25 @@ const commentsCount = bodyElement.querySelector('.comments-count');
 const socialCaption = bodyElement.querySelector('.social__caption');
 const socialComments = bodyElement.querySelector('.social__comments');
 
+const removeEventHandler = (element, handler, event) => {
+  element.removeEventListener(event, handler);
+};
+
 const pictureCloseFull = () => {
   bodyElement.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
   socialCommentCount.classList.remove('hidden');
   commentsLoader.classList.remove('hidden');
-  removeEventHandler();
+  removeEventHandler(bigPicture, pictureCloseFull, 'click');
 };
 
 const onEscKeyDown = (evt) => {
   if (isEscEvent(evt.code)) {
     evt.preventDefault();
     pictureCloseFull();
+    removeEventHandler(document, onEscKeyDown, 'keydown');
   }
 };
-
-function removeEventHandler () {
-  bigPictureCancel.removeEventListener('click', pictureCloseFull);
-  bodyElement.removeEventListener('keydown', onEscKeyDown);
-}
 
 const pictureShowFull = (picture) => {
   bodyElement.classList.add('modal-open');
@@ -46,7 +45,7 @@ const pictureShowFull = (picture) => {
     }
   }
 
-  const element = (index) => `<li class="social__comment">
+  const getListItem = (index) => `<li class="social__comment">
   <img
       class="social__picture"
       src="${picture.comments[index].avatar}"
@@ -56,14 +55,14 @@ const pictureShowFull = (picture) => {
 </li>`;
 
   for (let index = 0; index < picture.comments.length; index++) {
-    socialComments.insertAdjacentHTML('beforeend', element(index));
+    socialComments.insertAdjacentHTML('beforeend', getListItem(index));
   }
 
   socialCommentCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 
   bigPictureCancel.addEventListener('click', pictureCloseFull);
-  bodyElement.addEventListener('keydown', onEscKeyDown);
+  document.addEventListener('keydown', onEscKeyDown);
 };
 
 export {pictureShowFull};

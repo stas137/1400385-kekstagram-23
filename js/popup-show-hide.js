@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import {isEscEvent} from './utils.js';
 
 const popupShowHide = () => {
@@ -13,6 +12,20 @@ const popupShowHide = () => {
     uploadFile.value = '';
   });
 
+  const popupClose = () => {
+    formElement.classList.add('hidden');
+    bodyElement.classList.remove('modal-open');
+    uploadCancel.removeEventListener('click', popupClose);
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
+      evt.preventDefault();
+      popupClose();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   uploadFile.addEventListener('change', () => {
     const effectsList = bodyElement.querySelector('.effects__list');
     const effectsItem = effectsList.children;
@@ -24,24 +37,6 @@ const popupShowHide = () => {
     uploadCancel.addEventListener('click', popupClose);
     document.addEventListener('keydown', onEscKeyDown);
   });
-
-  const popupClose = () => {
-    formElement.classList.add('hidden');
-    bodyElement.classList.remove('modal-open');
-    removeEventHandler();
-  };
-
-  const onEscKeyDown = (evt) => {
-    if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
-      evt.preventDefault();
-      popupClose();
-    }
-  };
-
-  function removeEventHandler () {
-    uploadCancel.removeEventListener('click', popupClose);
-    document.removeEventListener('keydown', onEscKeyDown);
-  }
 };
 
 export {popupShowHide};
