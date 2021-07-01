@@ -20,7 +20,7 @@ const popupShowHide = () => {
   const effectsList = bodyElement.querySelector('.effects__list');
   const effectsItem = effectsList.children;
   const uploadEffectLevel = bodyElement.querySelector('.img-upload__effect-level');
-  const effectLevelValue = bodyElement.querySelector('.effect-level__value');
+  const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
 
   uploadFile.addEventListener('focus', () => {
     uploadFile.value = '';
