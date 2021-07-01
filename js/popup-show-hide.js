@@ -40,7 +40,7 @@ const popupShowHide = () => {
     }
   };
 
-  const eventHandler = () => {
+  const initialState = () => {
     effectLevelValue.value = String(LEVEL_VALUE);
     uploadPreview.style.filter = '';
 
@@ -53,6 +53,10 @@ const popupShowHide = () => {
     }
 
     uploadPreview.classList.add(EFFECTS_LIST[effectsItem[0].children[0].id]);
+  };
+
+  const eventHandler = () => {
+    initialState();
 
     formElement.classList.remove('hidden');
     bodyElement.classList.add('modal-open');
