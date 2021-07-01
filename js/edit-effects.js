@@ -16,6 +16,7 @@ const effectsRadioAddEventHandler = (item) => {
     const effectsItemChildren = item.children;
     const uploadEffectLevel = uploadImg.querySelector('.img-upload__effect-level');
     const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
+
     effectLevelValue.value = String(LEVEL_VALUE);
 
     if (effectsItemChildren[0].id === 'effect-none') {
