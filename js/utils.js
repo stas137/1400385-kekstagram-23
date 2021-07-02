@@ -1,3 +1,5 @@
+const ESCAPE_CODE = 'Escape';
+
 const getRandomIntegerFromRange = function (min, max) {
   if (min >= max) {
     return new Error('Значение "от" должно быть меньше значения "до"');
@@ -13,4 +15,6 @@ const checkMaxLength = function (str, length) {
   return new Error('Длина строки превышает максимально допустимую длину');
 };
 
-export {getRandomIntegerFromRange, checkMaxLength};
+const isEscEvent = (code) => code === ESCAPE_CODE;
+
+export {getRandomIntegerFromRange, checkMaxLength, isEscEvent};
