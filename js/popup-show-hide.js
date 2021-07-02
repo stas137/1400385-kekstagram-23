@@ -1,5 +1,6 @@
 import {isEscEvent} from './utils.js';
 const LEVEL_VALUE = 100;
+const EFFECT_NONE = 'effect-none';
 const EFFECTS_LIST = {
   'effect-none': 'effects__preview--none',
   'effect-chrome': 'effects__preview--chrome',
@@ -17,10 +18,10 @@ const popupShowHide = () => {
   const textHashtags = bodyElement.querySelector('.text__hashtags');
   const textDescription = bodyElement.querySelector('.text__description');
   const uploadPreview = bodyElement.querySelector('.img-upload__preview');
-  const effectsList = bodyElement.querySelector('.effects__list');
-  const effectsItem = effectsList.children;
   const uploadEffectLevel = bodyElement.querySelector('.img-upload__effect-level');
   const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
+  const effectsList = bodyElement.querySelector('.effects__list');
+  const effectsItem = effectsList.children;
 
   uploadFile.addEventListener('focus', () => {
     uploadFile.value = '';
@@ -40,23 +41,43 @@ const popupShowHide = () => {
     }
   };
 
-  const initialState = () => {
-    effectLevelValue.value = String(LEVEL_VALUE);
-    uploadPreview.style.filter = '';
+  const setEffect = (level, item) => {
+    effectLevelValue.value = level;
 
-    if (!uploadEffectLevel.classList.contains('hidden')) {
+    if (item[0].id === EFFECT_NONE) {
       uploadEffectLevel.classList.add('hidden');
+      uploadPreview.style.filter = '';
+    } else {
+      uploadEffectLevel.classList.remove('hidden');
+    }
+
+    if (uploadPreview.classList.contains(EFFECTS_LIST[item[0].id])) {
+      return;
     }
 
     for (const value of Object.values(EFFECTS_LIST)) {
       uploadPreview.classList.remove(value);
     }
 
-    uploadPreview.classList.add(EFFECTS_LIST[effectsItem[0].children[0].id]);
+    uploadPreview.classList.add(EFFECTS_LIST[item[0].id]);
   };
 
-  const eventHandler = () => {
-    initialState();
+  const effectsRadioAddEventHandler = (item) => {
+    const radioEventHandler = () => {
+      setEffect(String(LEVEL_VALUE), item.children);
+    };
+    item.addEventListener('click', radioEventHandler);
+  };
+
+  const editEffects = () => {
+    for (let index = 0; index < effectsItem.length; index++) {
+      effectsRadioAddEventHandler(effectsItem[index]);
+    }
+  };
+
+  const uploadEventHandler = () => {
+    setEffect(String(LEVEL_VALUE), effectsItem[0].children);
+    editEffects();
 
     formElement.classList.remove('hidden');
     bodyElement.classList.add('modal-open');
@@ -65,7 +86,7 @@ const popupShowHide = () => {
     document.addEventListener('keydown', onEscKeyDown);
   };
 
-  uploadFile.addEventListener('change', eventHandler);
+  uploadFile.addEventListener('change', uploadEventHandler);
 };
 
 export {popupShowHide};
