@@ -1,5 +1,8 @@
 import {isEscEvent} from './utils.js';
 
+const COMMENT_COUNT_SHOW = 5;
+let temp = 0;
+
 const bodyElement = document.body;
 const bigPicture = bodyElement.querySelector('.big-picture');
 const bigPictureImg = bodyElement.querySelector('.big-picture__img');
@@ -14,8 +17,6 @@ const socialComments = bodyElement.querySelector('.social__comments');
 const pictureCloseFull = () => {
   bodyElement.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
-  socialCommentCount.classList.remove('hidden');
-  commentsLoader.classList.remove('hidden');
   bigPictureCancel.removeEventListener('click', pictureCloseFull);
 };
 
@@ -27,7 +28,33 @@ const onEscKeyDown = (evt) => {
   }
 };
 
+const getListItem = (index, comments) => `<li class="social__comment">
+<img
+  class="social__picture"
+  src="${comments[index].avatar}"
+  alt="${comments[index].name}"
+  width="35" height="35">
+<p class="social__text">${comments[index].message}</p>
+</li>`;
+
+const loadCommentsEventHandler = (picture) => {
+
+  if (COMMENT_COUNT_SHOW * (temp + 1) <= picture.comments.length) {
+    for (let index = COMMENT_COUNT_SHOW * temp; index < COMMENT_COUNT_SHOW * (temp + 1); index++) {
+      socialComments.insertAdjacentHTML('beforeend', getListItem(index, picture.comments));
+    }
+    socialCommentCount.innerHTML = `${COMMENT_COUNT_SHOW * (temp + 1)} из <span class="comments-count">${picture.comments.length}</span> комментариев`;
+    temp++;
+  } else {
+    for (let index = COMMENT_COUNT_SHOW * temp; index < picture.comments.length; index++) {
+      socialComments.insertAdjacentHTML('beforeend', getListItem(index, picture.comments));
+    }
+    socialCommentCount.innerHTML = `${picture.comments.length} из <span class="comments-count">${picture.comments.length}</span> комментариев`;
+  }
+};
+
 const pictureShowFull = (picture) => {
+  temp = 0;
   bodyElement.classList.add('modal-open');
   bigPicture.classList.remove('hidden');
   bigPictureImg.children[0].src = picture.url;
@@ -41,22 +68,14 @@ const pictureShowFull = (picture) => {
     }
   }
 
-  const getListItem = (index) => `<li class="social__comment">
-  <img
-      class="social__picture"
-      src="${picture.comments[index].avatar}"
-      alt="${picture.comments[index].name}"
-      width="35" height="35">
-  <p class="social__text">${picture.comments[index].message}</p>
-</li>`;
-
-  for (let index = 0; index < picture.comments.length; index++) {
-    socialComments.insertAdjacentHTML('beforeend', getListItem(index));
+  for (let index = COMMENT_COUNT_SHOW * temp; index < COMMENT_COUNT_SHOW * (temp + 1); index++) {
+    socialComments.insertAdjacentHTML('beforeend', getListItem(index, picture.comments));
   }
 
-  socialCommentCount.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  socialCommentCount.innerHTML = `${COMMENT_COUNT_SHOW * (temp + 1)} из <span class="comments-count">${picture.comments.length}</span> комментариев`;
+  temp++;
 
+  commentsLoader.addEventListener('click', () => { loadCommentsEventHandler(picture); });
   bigPictureCancel.addEventListener('click', pictureCloseFull);
   document.addEventListener('keydown', onEscKeyDown);
 };
