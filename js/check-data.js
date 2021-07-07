@@ -2,7 +2,6 @@ const HASHTAGS_LENGTH = 100;
 const HASHTAGS_COUNT = 5;
 const HASHTAG_MAX_LENGTH = 20;
 const HASHTAG_MIN_LENGTH = 2;
-const DESCRIPTION_LENGTH = 140;
 const REG_EXP = '[^A-Za-zА-Яа-я0-9]';
 
 const getHashtags = (value) => (value.split(' '));
@@ -109,16 +108,6 @@ const checkHashtagsValidity = (value) => {
   return invalidities;
 };
 
-const checkDescriptionValidity = (value) => {
-  const invalidities = [];
-
-  if (value.length > DESCRIPTION_LENGTH) {
-    invalidities.push(`Длина комментария превышает ${DESCRIPTION_LENGTH} символов`);
-  }
-
-  return invalidities;
-};
-
 const itemSetCustomValidity = (item, message) => {
   if (message) {
     item.setCustomValidity(message);
@@ -130,14 +119,11 @@ const checkData = () => {
   const uploadImg = document.querySelector('.img-upload');
   const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
   const textHashtags = uploadImg.querySelector('.text__hashtags');
-  const textDescription = uploadImg.querySelector('.text__description');
 
   const itemAddEventHandler = () => {
     const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
-    const customDescriptionValidityMessage = checkDescriptionValidity(textDescription.value).join('\n');
 
     itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
-    itemSetCustomValidity(textDescription, customDescriptionValidityMessage);
   };
 
   uploadSubmit.addEventListener('click', itemAddEventHandler);
