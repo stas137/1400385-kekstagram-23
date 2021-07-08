@@ -1,4 +1,5 @@
 import {isEscEvent} from './utils.js';
+const MAX_SCALE_VALUE = 100;
 const LEVEL_VALUE = 100;
 const EFFECT_NONE = 'effect-none';
 const EFFECTS_LIST = {
@@ -22,14 +23,17 @@ const popupShowHide = () => {
   const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
   const effectsList = bodyElement.querySelector('.effects__list');
   const effectsItem = effectsList.children;
-
-  uploadFile.addEventListener('focus', () => {
-    uploadFile.value = '';
-  });
+  const uploadScale = bodyElement.querySelector('.img-upload__scale');
+  const controlValue = uploadScale.querySelector('.scale__control--value');
 
   const popupClose = () => {
     formElement.classList.add('hidden');
     bodyElement.classList.remove('modal-open');
+
+    uploadFile.value = '';
+    textHashtags.value = '';
+    textDescription.value = '';
+
     uploadCancel.removeEventListener('click', popupClose);
   };
 
@@ -75,9 +79,22 @@ const popupShowHide = () => {
     }
   };
 
+  const uploadImg = (file) => {
+    const imgFile = file;
+    const readerFile = new FileReader();
+
+    readerFile.readAsDataURL(imgFile);
+
+    readerFile.onload = () => {
+      uploadPreview.children[0].src = readerFile.result;
+      uploadPreview.style.transform = `scale(${controlValue.value.slice(0, controlValue.value.length - 1) / MAX_SCALE_VALUE})`;
+    };
+  };
+
   const uploadEventHandler = () => {
     setEffect(String(LEVEL_VALUE), effectsItem[0].children);
     editEffects();
+    uploadImg(uploadFile.files[0]);
 
     formElement.classList.remove('hidden');
     bodyElement.classList.add('modal-open');
