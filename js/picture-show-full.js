@@ -1,14 +1,10 @@
 import {isEscEvent} from './utils.js';
 
-const COMMENT_COUNT_SHOW = 5;
-let partComments = 1;
-
 const bodyElement = document.body;
 const bigPicture = bodyElement.querySelector('.big-picture');
 const bigPictureImg = bodyElement.querySelector('.big-picture__img');
 const bigPictureCancel = bodyElement.querySelector('.big-picture__cancel');
 const socialCommentCount = bodyElement.querySelector('.social__comment-count');
-const commentsLoader = bodyElement.querySelector('.comments-loader');
 const likesCount = bodyElement.querySelector('.likes-count');
 const commentsCount = bodyElement.querySelector('.comments-count');
 const socialCaption = bodyElement.querySelector('.social__caption');
@@ -17,7 +13,6 @@ const socialComments = bodyElement.querySelector('.social__comments');
 const pictureCloseFull = () => {
   bodyElement.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
-  commentsLoader.classList.remove('hidden');
   bigPictureCancel.removeEventListener('click', pictureCloseFull);
 };
 
@@ -38,27 +33,44 @@ const getListItem = (index, comments) => `<li class="social__comment">
 <p class="social__text">${comments[index].message}</p>
 </li>`;
 
-const loadCommentsEventHandler = (picture, eventHandler) => {
+const increasePartComments = (() => {
+  let part = 0;
+  return function (start) {
+    if (start !== undefined) {
+      part = 0;
+    }
+    return part++;
+  };
+})();
 
-  if (COMMENT_COUNT_SHOW * partComments <= picture.comments.length) {
-    for (let index = COMMENT_COUNT_SHOW * (partComments - 1); index < COMMENT_COUNT_SHOW * partComments; index++) {
+const loadCommentsEventHandler = (picture, commentsLoader) => {
+
+  const COMMENT_COUNT_SHOW = 5;
+  const partComments = increasePartComments();
+
+  const addSocialComments = (count, start) => {
+    for (let index = start; index < count + start; index++) {
       socialComments.insertAdjacentHTML('beforeend', getListItem(index, picture.comments));
     }
+  };
+
+  if (COMMENT_COUNT_SHOW * partComments < picture.comments.length) {
+    const index = COMMENT_COUNT_SHOW * (partComments - 1);
+    addSocialComments(COMMENT_COUNT_SHOW, index);
     socialCommentCount.innerHTML = `${COMMENT_COUNT_SHOW * partComments} из <span class="comments-count">${picture.comments.length}</span> комментариев`;
-    partComments++;
   } else {
-    for (let index = COMMENT_COUNT_SHOW * (partComments - 1); index < picture.comments.length; index++) {
-      socialComments.insertAdjacentHTML('beforeend', getListItem(index, picture.comments));
-    }
+    const index = COMMENT_COUNT_SHOW * (partComments - 1);
+    const countCommentsShow = picture.comments.length - COMMENT_COUNT_SHOW * (partComments - 1);
+    addSocialComments(countCommentsShow, index);
     socialCommentCount.innerHTML = `${picture.comments.length} из <span class="comments-count">${picture.comments.length}</span> комментариев`;
     commentsLoader.classList.add('hidden');
-    commentsLoader.removeEventListener('click', eventHandler);
+    const commentsLoaderClone = commentsLoader.cloneNode(true);
+    commentsLoader.replaceWith(commentsLoaderClone);
   }
-
 };
 
 const pictureShowFull = (picture) => {
-  partComments = 1;
+  const commentsLoader = bodyElement.querySelector('.comments-loader');
   bodyElement.classList.add('modal-open');
   bigPicture.classList.remove('hidden');
   bigPictureImg.children[0].src = picture.url;
@@ -71,10 +83,14 @@ const pictureShowFull = (picture) => {
       socialComments.children[index].remove();
     }
   }
-  const loadComments = () => loadCommentsEventHandler(picture, loadComments);
-  loadComments();
 
-  commentsLoader.addEventListener('click', loadComments);
+  commentsLoader.classList.remove('hidden');
+  increasePartComments(0);
+  loadCommentsEventHandler(picture, commentsLoader);
+  if (!commentsLoader.classList.contains('hidden')) {
+    commentsLoader.addEventListener('click', () => { loadCommentsEventHandler(picture, commentsLoader); });
+  }
+
   bigPictureCancel.addEventListener('click', pictureCloseFull);
   document.addEventListener('keydown', onEscKeyDown);
 };
