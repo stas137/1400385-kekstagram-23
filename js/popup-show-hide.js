@@ -26,22 +26,11 @@ const popupShowHide = () => {
   const uploadScale = bodyElement.querySelector('.img-upload__scale');
   const controlValue = uploadScale.querySelector('.scale__control--value');
 
-  const uploadFileClear = () => {
-    if (uploadFile.value) {
-      const form = document.createElement('form');
-      const uploadFileNextElement = uploadFile.nextElementSibling;
-      form.appendChild(uploadFile);
-      form.reset();
-      uploadFileNextElement.insertAdjacentElement('beforebegin', uploadFile);
-      form.remove();
-    }
-  };
-
   const popupClose = () => {
     formElement.classList.add('hidden');
     bodyElement.classList.remove('modal-open');
 
-    uploadFileClear();
+    uploadFile.value = '';
     textHashtags.value = '';
     textDescription.value = '';
 
