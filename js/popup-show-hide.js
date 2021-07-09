@@ -20,6 +20,7 @@ const popupShowHide = () => {
   const textDescription = bodyElement.querySelector('.text__description');
   const uploadPreview = bodyElement.querySelector('.img-upload__preview');
   const uploadEffectLevel = bodyElement.querySelector('.img-upload__effect-level');
+  const effectLevelSlider = uploadEffectLevel.querySelector('.effect-level__slider');
   const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
   const effectsList = bodyElement.querySelector('.effects__list');
   const effectsItem = effectsList.children;
@@ -34,6 +35,7 @@ const popupShowHide = () => {
     textHashtags.value = '';
     textDescription.value = '';
 
+    effectLevelSlider.noUiSlider.destroy();
     uploadCancel.removeEventListener('click', popupClose);
   };
 
@@ -64,6 +66,65 @@ const popupShowHide = () => {
     }
 
     uploadPreview.classList.add(EFFECTS_LIST[item[0].id]);
+
+    if (uploadPreview.classList.contains('effects__preview--chrome') || uploadPreview.classList.contains('effects__preview--sepia')) {
+      effectLevelSlider.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1,
+        },
+        start: 1,
+        step: 0.1,
+        connect: 'lower',
+        format: {
+          to(value) {
+            return value.toFixed(1);
+          },
+          from(value) {
+            return parseFloat(value);
+          },
+        },
+      });
+      effectLevelSlider.noUiSlider.set(1);
+    }  else if (uploadPreview.classList.contains('effects__preview--marvin')) {
+      effectLevelSlider.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: LEVEL_VALUE,
+        },
+        start: LEVEL_VALUE,
+        step: 1,
+        connect: 'lower',
+        format: {
+          to(value) {
+            return value.toFixed(0);
+          },
+          from(value) {
+            return parseFloat(value);
+          },
+        },
+      });
+      effectLevelSlider.noUiSlider.set(LEVEL_VALUE);
+    } else if (uploadPreview.classList.contains('effects__preview--phobos') || uploadPreview.classList.contains('effects__preview--heat')) {
+      effectLevelSlider.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 3,
+        },
+        start: 3,
+        step: 0.1,
+        connect: 'lower',
+        format: {
+          to(value) {
+            return value.toFixed(1);
+          },
+          from(value) {
+            return parseFloat(value);
+          },
+        },
+      });
+      effectLevelSlider.noUiSlider.set(3);
+    }
   };
 
   const effectsRadioAddEventHandler = (item) => {
@@ -98,6 +159,41 @@ const popupShowHide = () => {
 
     formElement.classList.remove('hidden');
     bodyElement.classList.add('modal-open');
+
+    noUiSlider.create(effectLevelSlider, {
+      range: {
+        min: 0,
+        max: LEVEL_VALUE,
+      },
+      start: LEVEL_VALUE,
+      step: 1,
+      connect: 'lower',
+      format: {
+        to(value) {
+          return value.toFixed(0);
+        },
+        from(value) {
+          return parseFloat(value);
+        },
+      },
+    });
+
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+      effectLevelValue.value = values[handle];
+
+      if (uploadPreview.classList.contains('effects__preview--chrome')) {
+        uploadPreview.style.filter = `grayscale(${(values[handle])})`;
+      } else if (uploadPreview.classList.contains('effects__preview--sepia')) {
+        uploadPreview.style.filter = `sepia(${(values[handle])})`;
+      } else if (uploadPreview.classList.contains('effects__preview--marvin')) {
+        uploadPreview.style.filter = `invert(${(values[handle])}%)`;
+      } else if (uploadPreview.classList.contains('effects__preview--phobos')) {
+        uploadPreview.style.filter = `blur(${(values[handle])}px)`;
+      } else if (uploadPreview.classList.contains('effects__preview--heat')) {
+        uploadPreview.style.filter = `brightness(${(values[handle])})`;
+      }
+
+    });
 
     uploadCancel.addEventListener('click', popupClose);
     document.addEventListener('keydown', onEscKeyDown);
