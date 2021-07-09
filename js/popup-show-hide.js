@@ -11,9 +11,8 @@ const EFFECTS_LIST = {
   'effect-heat': 'effects__preview--heat',
 };
 
-const bodyElement = document.querySelector('body');
-
 const popupShowHide = () => {
+  const bodyElement = document.querySelector('body');
   const uploadFile = bodyElement.querySelector('#upload-file');
   const uploadCancel = bodyElement.querySelector('#upload-cancel');
   const formElement = bodyElement.querySelector('.img-upload__overlay');
