@@ -118,7 +118,6 @@ const popupShowHide = () => {
 
     if (matches) {
       const readerFile = new FileReader();
-
       readerFile.readAsDataURL(imgFile);
 
       readerFile.onload = () => {
@@ -168,7 +167,6 @@ const popupShowHide = () => {
       } else if (uploadPreview.classList.contains('effects__preview--heat')) {
         uploadPreview.style.filter = `brightness(${(values[handle])})`;
       }
-
     });
 
     uploadCancel.addEventListener('click', popupClose);
