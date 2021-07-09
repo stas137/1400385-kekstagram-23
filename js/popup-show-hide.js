@@ -11,8 +11,9 @@ const EFFECTS_LIST = {
   'effect-heat': 'effects__preview--heat',
 };
 
+const bodyElement = document.querySelector('body');
+
 const popupShowHide = () => {
-  const bodyElement = document.querySelector('body');
   const uploadFile = bodyElement.querySelector('#upload-file');
   const uploadCancel = bodyElement.querySelector('#upload-cancel');
   const formElement = bodyElement.querySelector('.img-upload__overlay');
@@ -67,63 +68,32 @@ const popupShowHide = () => {
 
     uploadPreview.classList.add(EFFECTS_LIST[item[0].id]);
 
+    const effectLevelSliderUpdate = (min = 0, max = LEVEL_VALUE, start = LEVEL_VALUE, step = 1, fixed = 0) => {
+      effectLevelSlider.noUiSlider.updateOptions({
+        range: {
+          min: min,
+          max: max,
+        },
+        start: start,
+        step: step,
+        connect: 'lower',
+        format: {
+          to(value) {
+            return value.toFixed(fixed);
+          },
+          from(value) {
+            return parseFloat(value);
+          },
+        },
+      });
+    };
+
     if (uploadPreview.classList.contains('effects__preview--chrome') || uploadPreview.classList.contains('effects__preview--sepia')) {
-      effectLevelSlider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: 1,
-        },
-        start: 1,
-        step: 0.1,
-        connect: 'lower',
-        format: {
-          to(value) {
-            return value.toFixed(1);
-          },
-          from(value) {
-            return parseFloat(value);
-          },
-        },
-      });
-      effectLevelSlider.noUiSlider.set(1);
+      effectLevelSliderUpdate(0, 1, 1, 0.1, 1);
     }  else if (uploadPreview.classList.contains('effects__preview--marvin')) {
-      effectLevelSlider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: LEVEL_VALUE,
-        },
-        start: LEVEL_VALUE,
-        step: 1,
-        connect: 'lower',
-        format: {
-          to(value) {
-            return value.toFixed(0);
-          },
-          from(value) {
-            return parseFloat(value);
-          },
-        },
-      });
-      effectLevelSlider.noUiSlider.set(LEVEL_VALUE);
+      effectLevelSliderUpdate();
     } else if (uploadPreview.classList.contains('effects__preview--phobos') || uploadPreview.classList.contains('effects__preview--heat')) {
-      effectLevelSlider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: 3,
-        },
-        start: 3,
-        step: 0.1,
-        connect: 'lower',
-        format: {
-          to(value) {
-            return value.toFixed(1);
-          },
-          from(value) {
-            return parseFloat(value);
-          },
-        },
-      });
-      effectLevelSlider.noUiSlider.set(3);
+      effectLevelSliderUpdate(0, 3, 3, 0.1, 1);
     }
   };
 
@@ -141,15 +111,22 @@ const popupShowHide = () => {
   };
 
   const uploadImg = (file) => {
+    const FILE_TYPES = ['jpg', 'jpeg', 'png'];
     const imgFile = file;
-    const readerFile = new FileReader();
+    const fileName = file.name.toLowerCase();
 
-    readerFile.readAsDataURL(imgFile);
+    const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
 
-    readerFile.onload = () => {
-      uploadPreview.children[0].src = readerFile.result;
-      uploadPreview.style.transform = `scale(${controlValue.value.slice(0, controlValue.value.length - 1) / MAX_SCALE_VALUE})`;
-    };
+    if (matches) {
+      const readerFile = new FileReader();
+
+      readerFile.readAsDataURL(imgFile);
+
+      readerFile.onload = () => {
+        uploadPreview.children[0].src = readerFile.result;
+        uploadPreview.style.transform = `scale(${controlValue.value.slice(0, controlValue.value.length - 1) / MAX_SCALE_VALUE})`;
+      };
+    }
   };
 
   const uploadEventHandler = () => {
