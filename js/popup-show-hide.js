@@ -11,21 +11,22 @@ const EFFECTS_LIST = {
   'effect-heat': 'effects__preview--heat',
 };
 
+const bodyElement = document.querySelector('body');
+const uploadFile = bodyElement.querySelector('#upload-file');
+const uploadCancel = bodyElement.querySelector('#upload-cancel');
+const formElement = bodyElement.querySelector('.img-upload__overlay');
+const textHashtags = bodyElement.querySelector('.text__hashtags');
+const textDescription = bodyElement.querySelector('.text__description');
+const uploadPreview = bodyElement.querySelector('.img-upload__preview');
+const uploadEffectLevel = bodyElement.querySelector('.img-upload__effect-level');
+const effectLevelSlider = uploadEffectLevel.querySelector('.effect-level__slider');
+const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
+const effectsList = bodyElement.querySelector('.effects__list');
+const effectsItem = effectsList.children;
+const uploadScale = bodyElement.querySelector('.img-upload__scale');
+const controlValue = uploadScale.querySelector('.scale__control--value');
+
 const popupShowHide = () => {
-  const bodyElement = document.querySelector('body');
-  const uploadFile = bodyElement.querySelector('#upload-file');
-  const uploadCancel = bodyElement.querySelector('#upload-cancel');
-  const formElement = bodyElement.querySelector('.img-upload__overlay');
-  const textHashtags = bodyElement.querySelector('.text__hashtags');
-  const textDescription = bodyElement.querySelector('.text__description');
-  const uploadPreview = bodyElement.querySelector('.img-upload__preview');
-  const uploadEffectLevel = bodyElement.querySelector('.img-upload__effect-level');
-  const effectLevelSlider = uploadEffectLevel.querySelector('.effect-level__slider');
-  const effectLevelValue = uploadEffectLevel.querySelector('.effect-level__value');
-  const effectsList = bodyElement.querySelector('.effects__list');
-  const effectsItem = effectsList.children;
-  const uploadScale = bodyElement.querySelector('.img-upload__scale');
-  const controlValue = uploadScale.querySelector('.scale__control--value');
 
   const popupClose = () => {
     formElement.classList.add('hidden');
