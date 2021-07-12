@@ -109,24 +109,21 @@ const checkHashtagsValidity = (value) => {
 };
 
 const itemSetCustomValidity = (item, message) => {
-  if (message) {
-    item.setCustomValidity(message);
-    item.style.outlineColor = 'red';
-  }
+  item.setCustomValidity(message);
+  item.style.outlineColor = 'red';
 };
 
 const checkData = () => {
   const uploadImg = document.querySelector('.img-upload');
-  const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
   const textHashtags = uploadImg.querySelector('.text__hashtags');
+  const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
 
-  const itemAddEventHandler = () => {
-    const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
-
+  if (customHashtagsValidityMessage) {
     itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
-  };
-
-  uploadSubmit.addEventListener('click', itemAddEventHandler);
+    return false;
+  } else {
+    return true;
+  }
 };
 
 export {checkData};

@@ -1,4 +1,8 @@
 import {isEscEvent} from './utils.js';
+import {checkData} from './check-data.js';
+import {sendData} from './api.js';
+
+const ALERT_SHOW_TIME = 4000;
 const MAX_SCALE_VALUE = 100;
 const LEVEL_VALUE = 100;
 const EFFECT_NONE = 'effect-none';
@@ -14,7 +18,9 @@ const EFFECTS_LIST = {
 const bodyElement = document.querySelector('body');
 const uploadFile = bodyElement.querySelector('#upload-file');
 const uploadCancel = bodyElement.querySelector('#upload-cancel');
+const imgUploadForm = bodyElement.querySelector('.img-upload__form');
 const formElement = bodyElement.querySelector('.img-upload__overlay');
+const formSubmit = bodyElement.querySelector('.img-upload__submit');
 const textHashtags = bodyElement.querySelector('.text__hashtags');
 const textDescription = bodyElement.querySelector('.text__description');
 const uploadPreview = bodyElement.querySelector('.img-upload__preview');
@@ -26,27 +32,27 @@ const effectsItem = effectsList.children;
 const uploadScale = bodyElement.querySelector('.img-upload__scale');
 const controlValue = uploadScale.querySelector('.scale__control--value');
 
+const popupClose = () => {
+  formElement.classList.add('hidden');
+  bodyElement.classList.remove('modal-open');
+
+  uploadFile.value = '';
+  textHashtags.value = '';
+  textDescription.value = '';
+
+  effectLevelSlider.noUiSlider.destroy();
+  uploadCancel.removeEventListener('click', popupClose);
+};
+
+const onEscKeyDown = (evt) => {
+  if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
+    evt.preventDefault();
+    popupClose();
+    document.removeEventListener('keydown', onEscKeyDown);
+  }
+};
+
 const popupShowHide = () => {
-
-  const popupClose = () => {
-    formElement.classList.add('hidden');
-    bodyElement.classList.remove('modal-open');
-
-    uploadFile.value = '';
-    textHashtags.value = '';
-    textDescription.value = '';
-
-    effectLevelSlider.noUiSlider.destroy();
-    uploadCancel.removeEventListener('click', popupClose);
-  };
-
-  const onEscKeyDown = (evt) => {
-    if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
-      evt.preventDefault();
-      popupClose();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-  };
 
   const setEffect = (level, item) => {
     effectLevelValue.value = level;
@@ -176,5 +182,35 @@ const popupShowHide = () => {
 
   uploadFile.addEventListener('change', uploadEventHandler);
 };
+
+const renderError = (err) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = 999;
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = `${bodyElement.clientWidth / 2 - 150}px`;
+  alertContainer.style.top = `${bodyElement.clientHeight / 3}px`;
+
+  alertContainer.style.padding = '30px 30px';
+
+  alertContainer.style.width = '300px';
+  alertContainer.style.height = '120px';
+  alertContainer.style.borderRadius = '10px';
+  alertContainer.style.fontSize = '20px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'red';
+  alertContainer.innerHTML = `Ошибка!<br/>${err}`;
+
+  bodyElement.append(alertContainer);
+
+  setTimeout(() => { alertContainer.remove(); }, ALERT_SHOW_TIME);
+};
+
+formSubmit.addEventListener('click', (evt) => {
+  if (checkData()) {
+    evt.preventDefault();
+    const formData = new FormData(imgUploadForm);
+    sendData(popupClose, renderError, formData);
+  }
+});
 
 export {popupShowHide};
