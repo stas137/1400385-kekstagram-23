@@ -183,26 +183,41 @@ const popupShowHide = () => {
   uploadFile.addEventListener('change', uploadEventHandler);
 };
 
-const renderSuccess = (err) => {
-  const errorContainerTemplate = bodyElement.querySelector('#error').content;
-  const errorContainerContains = errorContainerTemplate.querySelector('.error');
-  const errorContainer = errorContainerContains.cloneNode(true);
-  const errorTitle = errorContainer.querySelector('.error__title');
-  errorTitle.textContent = err;
+const containerClose = (container) => {
+  container.remove();
+};
 
-  bodyElement.append(errorContainer);
-  setTimeout(() => { errorContainer.remove(); }, ALERT_SHOW_TIME);
+const renderSuccess = () => {
+  const successContainerTemplate = bodyElement.querySelector('#success').content.querySelector('.success');
+  const successContainer = successContainerTemplate.cloneNode(true);
+  const successButton = successContainer.querySelector('.success__button');
+
+  successButton.addEventListener('click', () => containerClose(successContainer));
+  successButton.addEventListener('keydown', (evt) => {
+    if (isEscEvent(evt.code)) {
+      containerClose(successButton);
+    }
+  });
+  popupClose();
+
+  bodyElement.append(successContainer);
 };
 
 const renderError = (err) => {
-  const errorContainerTemplate = bodyElement.querySelector('#error').content;
-  const errorContainerContains = errorContainerTemplate.querySelector('.error');
-  const errorContainer = errorContainerContains.cloneNode(true);
+  const errorContainerTemplate = bodyElement.querySelector('#error').content.querySelector('.error');
+  const errorContainer = errorContainerTemplate.cloneNode(true);
   const errorTitle = errorContainer.querySelector('.error__title');
+  const errorButton = errorContainer.querySelector('.error__button');
+
   errorTitle.textContent = err;
+  errorButton.addEventListener('click', () => containerClose(errorContainer));
+  errorButton.addEventListener('keydown', (evt) => {
+    if (isEscEvent(evt.code)) {
+      containerClose(errorContainer);
+    }
+  });
 
   bodyElement.append(errorContainer);
-  setTimeout(() => { errorContainer.remove(); }, ALERT_SHOW_TIME);
 };
 
 formSubmit.addEventListener('click', (evt) => {
