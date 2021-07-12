@@ -39,7 +39,7 @@ const renderSocialComments = (picture, indexFrom, indexTo) => {
   }
 };
 
-const loadCommentsEventHandler = (picture, indexFrom = 0, indexTo = 5) => {
+const loadComments = (picture, indexFrom = 0, indexTo = 5) => {
   const COMMENT_COUNT_SHOW = 5;
   const commentsLoader = bodyElement.querySelector('.comments-loader');
   const commentsLoaderClone = commentsLoader.cloneNode(true);
@@ -53,7 +53,7 @@ const loadCommentsEventHandler = (picture, indexFrom = 0, indexTo = 5) => {
       const indexFromNew = indexTo;
       const indexToNew = indexTo + COMMENT_COUNT_SHOW;
 
-      loadCommentsEventHandler(picture, indexFromNew, indexToNew);
+      loadComments(picture, indexFromNew, indexToNew);
     };
 
     commentsLoaderClone.classList.remove('hidden');
@@ -81,7 +81,7 @@ const pictureShowFull = (picture) => {
     }
   }
 
-  loadCommentsEventHandler(picture);
+  loadComments(picture);
 
   bigPictureCancel.addEventListener('click', pictureCloseFull);
   document.addEventListener('keydown', onEscKeyDown);
