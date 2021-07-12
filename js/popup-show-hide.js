@@ -183,33 +183,33 @@ const popupShowHide = () => {
   uploadFile.addEventListener('change', uploadEventHandler);
 };
 
+const renderSuccess = (err) => {
+  const errorContainerTemplate = bodyElement.querySelector('#error').content;
+  const errorContainerContains = errorContainerTemplate.querySelector('.error');
+  const errorContainer = errorContainerContains.cloneNode(true);
+  const errorTitle = errorContainer.querySelector('.error__title');
+  errorTitle.textContent = err;
+
+  bodyElement.append(errorContainer);
+  setTimeout(() => { errorContainer.remove(); }, ALERT_SHOW_TIME);
+};
+
 const renderError = (err) => {
-  const alertContainer = document.createElement('div');
-  alertContainer.style.zIndex = 999;
-  alertContainer.style.position = 'absolute';
-  alertContainer.style.left = `${bodyElement.clientWidth / 2 - 150}px`;
-  alertContainer.style.top = `${bodyElement.clientHeight / 3}px`;
+  const errorContainerTemplate = bodyElement.querySelector('#error').content;
+  const errorContainerContains = errorContainerTemplate.querySelector('.error');
+  const errorContainer = errorContainerContains.cloneNode(true);
+  const errorTitle = errorContainer.querySelector('.error__title');
+  errorTitle.textContent = err;
 
-  alertContainer.style.padding = '30px 30px';
-
-  alertContainer.style.width = '300px';
-  alertContainer.style.height = '120px';
-  alertContainer.style.borderRadius = '10px';
-  alertContainer.style.fontSize = '20px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.backgroundColor = 'red';
-  alertContainer.innerHTML = `Ошибка!<br/>${err}`;
-
-  bodyElement.append(alertContainer);
-
-  setTimeout(() => { alertContainer.remove(); }, ALERT_SHOW_TIME);
+  bodyElement.append(errorContainer);
+  setTimeout(() => { errorContainer.remove(); }, ALERT_SHOW_TIME);
 };
 
 formSubmit.addEventListener('click', (evt) => {
   if (checkData()) {
     evt.preventDefault();
     const formData = new FormData(imgUploadForm);
-    sendData(popupClose, renderError, formData);
+    sendData(renderSuccess, renderError, formData);
   }
 });
 

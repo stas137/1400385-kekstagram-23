@@ -18,9 +18,9 @@ const sendData = (onSuccess, onError, formData) => {
   })
     .then((response) => {
       if (response.ok) {
-        onSuccess();
+        return onSuccess();
       }
-      throw new Error('Не удалось отправить форму, попробуйте еще раз');
+      throw new Error('Ошибка загрузки файла!');
     })
     .catch((err) => onError(err));
 };
