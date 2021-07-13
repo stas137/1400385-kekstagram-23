@@ -39,7 +39,10 @@ const popupClose = () => {
   textHashtags.value = '';
   textDescription.value = '';
 
-  effectLevelSlider.noUiSlider.destroy();
+  if (effectLevelSlider.noUiSlider) {
+    effectLevelSlider.noUiSlider.destroy();
+  }
+
   uploadCancel.removeEventListener('click', popupClose);
 };
 
@@ -182,23 +185,37 @@ const popupShowHide = () => {
   uploadFile.addEventListener('change', uploadEventHandler);
 };
 
-const containerClose = (container) => {
+const containerRemove = (container) => {
   container.remove();
 };
 
 const renderSuccess = () => {
+  popupClose();
   const successContainerTemplate = bodyElement.querySelector('#success').content.querySelector('.success');
   const successContainer = successContainerTemplate.cloneNode(true);
   const successButton = successContainer.querySelector('.success__button');
 
-  successButton.addEventListener('click', () => containerClose(successContainer));
-  successButton.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt.code)) {
-      containerClose(successButton);
-    }
-  });
-  popupClose();
+  successButton.addEventListener('click', () => containerRemove(successContainer));
 
+  document.removeEventListener('keydown', onEscKeyDown);
+
+  const onEscKeyDownContainer = (evt) => {
+    if (isEscEvent(evt.code)) {
+      containerRemove(successContainer);
+      document.removeEventListener('keydown', onEscKeyDownContainer);
+    }
+  };
+
+  const checkClickContainer = (evt) => {
+    if (!evt.target.classList.contains('success__inner')) {
+      containerRemove(successContainer);
+      document.removeEventListener('click', checkClickContainer);
+    }
+  };
+
+  popupClose();
+  document.addEventListener('keydown', onEscKeyDownContainer);
+  document.addEventListener('click', checkClickContainer);
   bodyElement.append(successContainer);
 };
 
@@ -209,13 +226,27 @@ const renderError = (err) => {
   const errorButton = errorContainer.querySelector('.error__button');
 
   errorTitle.textContent = err;
-  errorButton.addEventListener('click', () => containerClose(errorContainer));
-  errorButton.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt.code)) {
-      containerClose(errorContainer);
-    }
-  });
+  errorButton.addEventListener('click', () => containerRemove(errorContainer));
 
+  document.removeEventListener('keydown', onEscKeyDown);
+
+  const onEscKeyDownContainer = (evt) => {
+    if (isEscEvent(evt.code)) {
+      containerRemove(errorContainer);
+      document.removeEventListener('keydown', onEscKeyDownContainer);
+    }
+  };
+
+  const checkClickContainer = (evt) => {
+    if (!evt.target.classList.contains('error__inner')) {
+      containerRemove(errorContainer);
+      document.removeEventListener('click', checkClickContainer);
+    }
+  };
+
+  popupClose();
+  document.addEventListener('keydown', onEscKeyDownContainer);
+  document.addEventListener('click', checkClickContainer);
   bodyElement.append(errorContainer);
 };
 
