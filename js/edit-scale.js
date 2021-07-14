@@ -13,7 +13,7 @@ const setScale = (evt) => {
   const number = parseInt(controlValue.value.slice(0, controlValue.value.length - 1), 10);
   let directionScale = null;
 
-  if ((evt.target === controlSmaller) && ((number - STEP) > STEP)) {
+  if ((evt.target === controlSmaller) && ((number - STEP) >= STEP)) {
     directionScale = -1;
   } else if ((evt.target === controlBigger) && ((number + STEP) <= MAX_SCALE_VALUE)) {
     directionScale = 1;
