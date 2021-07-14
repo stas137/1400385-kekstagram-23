@@ -116,20 +116,14 @@ const itemSetCustomValidity = (item, message) => {
 const checkData = () => {
   const uploadImg = document.querySelector('.img-upload');
   const textHashtags = uploadImg.querySelector('.text__hashtags');
-  const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
+  const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
 
-  const itemAddEventHandler = () => {
-    const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
-
-    if (customHashtagsValidityMessage) {
-      itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  uploadSubmit.addEventListener('click', itemAddEventHandler);
+  if (customHashtagsValidityMessage) {
+    itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
+    return false;
+  } else {
+    return true;
+  }
 };
 
 export {checkData};
