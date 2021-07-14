@@ -109,30 +109,23 @@ const checkHashtagsValidity = (value) => {
 };
 
 const itemSetCustomValidity = (item, message) => {
-  if (message) {
-    item.setCustomValidity(message);
-    item.style.outlineColor = 'red';
-  }
+  item.setCustomValidity(message);
+  item.style.outlineColor = 'red';
 };
 
 const checkData = () => {
   const uploadImg = document.querySelector('.img-upload');
-  const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
   const textHashtags = uploadImg.querySelector('.text__hashtags');
+  const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
 
   const itemAddEventHandler = () => {
     const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
 
-    if (customHashtagsValidityMessage.length) {
+    if (customHashtagsValidityMessage) {
       itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
+      return false;
     } else {
-      const uploadScale = uploadImg.querySelector('.img-upload__scale');
-      const controlValue = uploadScale.querySelector('.scale__control--value');
-      const inputScaleHidden = document.createElement('input');
-      inputScaleHidden.hidden = true;
-      inputScaleHidden.name = 'scale';
-      inputScaleHidden.value = controlValue.value;
-      uploadScale.append(inputScaleHidden);
+      return true;
     }
   };
 

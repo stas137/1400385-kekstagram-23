@@ -1,5 +1,7 @@
 import {isEscEvent} from './utils.js';
-const DEFAULT_SCALE_VALUE = 100;
+import {checkData} from './check-data.js';
+import {sendData} from './api.js';
+
 const MAX_SCALE_VALUE = 100;
 const LEVEL_VALUE = 100;
 const EFFECT_NONE = 'effect-none';
@@ -15,7 +17,9 @@ const EFFECTS_LIST = {
 const bodyElement = document.querySelector('body');
 const uploadFile = bodyElement.querySelector('#upload-file');
 const uploadCancel = bodyElement.querySelector('#upload-cancel');
+const imgUploadForm = bodyElement.querySelector('.img-upload__form');
 const formElement = bodyElement.querySelector('.img-upload__overlay');
+const formSubmit = bodyElement.querySelector('.img-upload__submit');
 const textHashtags = bodyElement.querySelector('.text__hashtags');
 const textDescription = bodyElement.querySelector('.text__description');
 const uploadPreview = bodyElement.querySelector('.img-upload__preview');
@@ -27,27 +31,30 @@ const effectsItem = effectsList.children;
 const uploadScale = bodyElement.querySelector('.img-upload__scale');
 const controlValue = uploadScale.querySelector('.scale__control--value');
 
-const popupShowHide = () => {
+const popupClose = () => {
+  formElement.classList.add('hidden');
+  bodyElement.classList.remove('modal-open');
 
-  const popupClose = () => {
-    formElement.classList.add('hidden');
-    bodyElement.classList.remove('modal-open');
+  uploadFile.value = '';
+  textHashtags.value = '';
+  textDescription.value = '';
 
-    uploadFile.value = '';
-    textHashtags.value = '';
-    textDescription.value = '';
-
+  if (effectLevelSlider.noUiSlider) {
     effectLevelSlider.noUiSlider.destroy();
-    uploadCancel.removeEventListener('click', popupClose);
-  };
+  }
 
-  const onEscKeyDown = (evt) => {
-    if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
-      evt.preventDefault();
-      popupClose();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-  };
+  uploadCancel.removeEventListener('click', popupClose);
+};
+
+const onEscKeyDown = (evt) => {
+  if (isEscEvent(evt.code) && (document.activeElement !== textDescription) && (document.activeElement !== textHashtags)) {
+    evt.preventDefault();
+    popupClose();
+    document.removeEventListener('keydown', onEscKeyDown);
+  }
+};
+
+const popupShowHide = () => {
 
   const setEffect = (level, item) => {
     effectLevelValue.value = level;
@@ -124,7 +131,6 @@ const popupShowHide = () => {
 
       readerFile.onload = () => {
         uploadPreview.children[0].src = readerFile.result;
-        controlValue.value = `${String(DEFAULT_SCALE_VALUE)}%`;
         uploadPreview.style.transform = `scale(${controlValue.value.slice(0, controlValue.value.length - 1) / MAX_SCALE_VALUE})`;
       };
     }
@@ -180,5 +186,78 @@ const popupShowHide = () => {
 
   uploadFile.addEventListener('change', uploadEventHandler);
 };
+
+const containerRemove = (container) => {
+  container.remove();
+};
+
+const renderSuccess = () => {
+  popupClose();
+  const successContainerTemplate = bodyElement.querySelector('#success').content.querySelector('.success');
+  const successContainer = successContainerTemplate.cloneNode(true);
+  const successButton = successContainer.querySelector('.success__button');
+
+  successButton.addEventListener('click', () => containerRemove(successContainer));
+
+  document.removeEventListener('keydown', onEscKeyDown);
+
+  const onEscKeyDownContainer = (evt) => {
+    if (isEscEvent(evt.code)) {
+      containerRemove(successContainer);
+      document.removeEventListener('keydown', onEscKeyDownContainer);
+    }
+  };
+
+  const checkClickContainer = (evt) => {
+    if (!evt.target.classList.contains('success__inner')) {
+      containerRemove(successContainer);
+      document.removeEventListener('click', checkClickContainer);
+    }
+  };
+
+  popupClose();
+  document.addEventListener('keydown', onEscKeyDownContainer);
+  document.addEventListener('click', checkClickContainer);
+  bodyElement.append(successContainer);
+};
+
+const renderError = (err) => {
+  const errorContainerTemplate = bodyElement.querySelector('#error').content.querySelector('.error');
+  const errorContainer = errorContainerTemplate.cloneNode(true);
+  const errorTitle = errorContainer.querySelector('.error__title');
+  const errorButton = errorContainer.querySelector('.error__button');
+
+  errorTitle.textContent = err;
+  errorButton.addEventListener('click', () => containerRemove(errorContainer));
+
+  document.removeEventListener('keydown', onEscKeyDown);
+
+  const onEscKeyDownContainer = (evt) => {
+    if (isEscEvent(evt.code)) {
+      containerRemove(errorContainer);
+      document.removeEventListener('keydown', onEscKeyDownContainer);
+    }
+  };
+
+  const checkClickContainer = (evt) => {
+    if (!evt.target.classList.contains('error__inner')) {
+      containerRemove(errorContainer);
+      document.removeEventListener('click', checkClickContainer);
+    }
+  };
+
+  popupClose();
+  document.addEventListener('keydown', onEscKeyDownContainer);
+  document.addEventListener('click', checkClickContainer);
+  bodyElement.append(errorContainer);
+};
+
+formSubmit.addEventListener('click', (evt) => {
+  if (checkData()) {
+    evt.preventDefault();
+    const formData = new FormData(imgUploadForm);
+    sendData(renderSuccess, renderError, formData);
+  }
+});
 
 export {popupShowHide};
