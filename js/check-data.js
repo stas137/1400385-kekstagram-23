@@ -125,14 +125,6 @@ const checkData = () => {
 
     if (customHashtagsValidityMessage.length) {
       itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
-    } else {
-      const uploadScale = uploadImg.querySelector('.img-upload__scale');
-      const controlValue = uploadScale.querySelector('.scale__control--value');
-      const inputScaleHidden = document.createElement('input');
-      inputScaleHidden.hidden = true;
-      inputScaleHidden.name = 'scale';
-      inputScaleHidden.value = controlValue.value;
-      uploadScale.append(inputScaleHidden);
     }
   };
 

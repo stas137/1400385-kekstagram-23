@@ -1,5 +1,5 @@
 import {isEscEvent} from './utils.js';
-const DEFAULT_SCALE_VALUE = 100;
+
 const MAX_SCALE_VALUE = 100;
 const LEVEL_VALUE = 100;
 const EFFECT_NONE = 'effect-none';
@@ -124,7 +124,6 @@ const popupShowHide = () => {
 
       readerFile.onload = () => {
         uploadPreview.children[0].src = readerFile.result;
-        controlValue.value = `${String(DEFAULT_SCALE_VALUE)}%`;
         uploadPreview.style.transform = `scale(${controlValue.value.slice(0, controlValue.value.length - 1) / MAX_SCALE_VALUE})`;
       };
     }
