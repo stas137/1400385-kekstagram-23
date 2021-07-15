@@ -7,6 +7,9 @@ const bodyElement = document.body;
 const pictureTemplate = bodyElement.querySelector('#picture').content.querySelector('.picture');
 const picturesList = bodyElement.querySelector('.pictures');
 const imgFilters= bodyElement.querySelector('.img-filters');
+const filterDefault = imgFilters.querySelector('#filter-default');
+const filterRandom = imgFilters.querySelector('filter-random');
+const filterDiscussed = imgFilters.querySelector('#filter-discussed');
 
 const addEventHandler = (evt, picture) => {
   evt.preventDefault();
@@ -33,6 +36,9 @@ const renderData = (pictures) => {
   imgFilters.classList.remove('img-filters--inactive');
   imgFilters.classList.add('img-filters--active');
 
+  filterDefault.addEventListener('click', eventHandler);
+  filterRandom.addEventListener('click', eventHandler);
+  filterDefault.addEventListener('click', eventHandler);
 };
 
 const renderError = (err) => {
