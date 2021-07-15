@@ -2,6 +2,7 @@ import {isEscEvent} from './utils.js';
 import {checkData} from './check-data.js';
 import {sendData} from './api.js';
 
+
 const MAX_SCALE_VALUE = 100;
 const LEVEL_VALUE = 100;
 const EFFECT_NONE = 'effect-none';
@@ -162,7 +163,7 @@ const popupShowHide = () => {
       },
     });
 
-    effectLevelSlider.noUiSlider.on('update', (values, handle) => {
+    const noUiSliderEventHandler = (values, handle) => {
       effectLevelValue.value = values[handle];
 
       if (uploadPreview.classList.contains('effects__preview--chrome')) {
@@ -176,7 +177,9 @@ const popupShowHide = () => {
       } else if (uploadPreview.classList.contains('effects__preview--heat')) {
         uploadPreview.style.filter = `brightness(${(values[handle])})`;
       }
-    });
+    };
+
+    effectLevelSlider.noUiSlider.on('update', (values, handle) => { noUiSliderEventHandler(values, handle); });
 
     uploadCancel.addEventListener('click', popupClose);
     document.addEventListener('keydown', onEscKeyDown);
