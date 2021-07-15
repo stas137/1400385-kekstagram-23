@@ -123,7 +123,9 @@ const checkData = () => {
   const itemAddEventHandler = () => {
     const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
 
-    itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
+    if (customHashtagsValidityMessage.length) {
+      itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
+    }
   };
 
   uploadSubmit.addEventListener('click', itemAddEventHandler);
