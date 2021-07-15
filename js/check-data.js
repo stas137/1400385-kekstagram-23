@@ -118,12 +118,7 @@ const checkData = () => {
   const textHashtags = uploadImg.querySelector('.text__hashtags');
   const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
 
-  if (customHashtagsValidityMessage) {
-    itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
-    return false;
-  } else {
-    return true;
-  }
+  return customHashtagsValidityMessage.length > 0 ? itemSetCustomValidity(textHashtags, customHashtagsValidityMessage) : true;
 };
 
 export {checkData};
