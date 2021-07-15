@@ -6,9 +6,10 @@ const ALERT_SHOW_TIME = 4000;
 const bodyElement = document.body;
 const pictureTemplate = bodyElement.querySelector('#picture').content.querySelector('.picture');
 const picturesList = bodyElement.querySelector('.pictures');
+
 const imgFilters= bodyElement.querySelector('.img-filters');
 const filterDefault = imgFilters.querySelector('#filter-default');
-const filterRandom = imgFilters.querySelector('filter-random');
+const filterRandom = imgFilters.querySelector('#filter-random');
 const filterDiscussed = imgFilters.querySelector('#filter-discussed');
 
 const addEventHandler = (evt, picture) => {
@@ -16,7 +17,7 @@ const addEventHandler = (evt, picture) => {
   pictureShowFull(picture);
 };
 
-const renderData = (pictures) => {
+const renderThumbnail = (pictures) => {
   const pictureListFragment = document.createDocumentFragment();
 
   pictures.forEach((picture) => {
@@ -33,12 +34,48 @@ const renderData = (pictures) => {
   });
 
   picturesList.appendChild(pictureListFragment);
+};
+
+const reRenderData = (pictures) => {
+
+  const firstPicture = picturesList.querySelector('.picture');
+
+  for (let index = picturesList.children.length - 1; index >= 0; index--) {
+    if (picturesList.children[index] === firstPicture) {
+      picturesList.children[index].remove();
+      break;
+    }
+    picturesList.children[index].remove();
+  }
+
+  renderThumbnail(pictures);
+};
+
+const eventHandler = (evt, pictures) => {
+  if ((!evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
+
+    const elements = evt.target.parentElement.children;
+    for (let index = 0; index < elements.length; index ++) {
+      elements[index].classList.remove('img-filters__button--active');
+    }
+
+    evt.target.classList.add('img-filters__button--active');
+
+    if (evt.target === filterDefault) {
+      reRenderData(pictures);
+    } else if (evt.target === filterDiscussed) {
+      const sortPictures = sortData(pictures);
+      reRenderData(sortPictures);
+    }
+  }
+};
+
+const renderData = (data) => {
+  renderThumbnail(data);
+
   imgFilters.classList.remove('img-filters--inactive');
   imgFilters.classList.add('img-filters--active');
-
-  filterDefault.addEventListener('click', eventHandler);
-  filterRandom.addEventListener('click', eventHandler);
-  filterDefault.addEventListener('click', eventHandler);
+  imgFilters.addEventListener('click', (evt) => { eventHandler(evt, data); });
 };
 
 const renderError = (err) => {
