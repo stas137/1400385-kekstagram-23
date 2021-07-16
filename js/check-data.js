@@ -109,26 +109,16 @@ const checkHashtagsValidity = (value) => {
 };
 
 const itemSetCustomValidity = (item, message) => {
-  if (message) {
-    item.setCustomValidity(message);
-    item.style.outlineColor = 'red';
-  }
+  item.setCustomValidity(message);
+  item.style.outlineColor = 'red';
 };
 
 const checkData = () => {
   const uploadImg = document.querySelector('.img-upload');
-  const uploadSubmit = uploadImg.querySelector('.img-upload__submit');
   const textHashtags = uploadImg.querySelector('.text__hashtags');
+  const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
 
-  const itemAddEventHandler = () => {
-    const customHashtagsValidityMessage = checkHashtagsValidity(textHashtags.value).join('\n');
-
-    if (customHashtagsValidityMessage.length) {
-      itemSetCustomValidity(textHashtags, customHashtagsValidityMessage);
-    }
-  };
-
-  uploadSubmit.addEventListener('click', itemAddEventHandler);
+  return customHashtagsValidityMessage.length > 0 ? itemSetCustomValidity(textHashtags, customHashtagsValidityMessage) : true;
 };
 
 export {checkData};
