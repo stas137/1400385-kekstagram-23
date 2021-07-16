@@ -1,7 +1,10 @@
 import {getData} from './api.js';
+import {compareCountComments, getRandomIntegerFromRange} from './utils.js';
 import {pictureShowFull} from './picture-show-full.js';
 
 const ALERT_SHOW_TIME = 4000;
+const RANDOM_COUNT_THUMBNAILS = 10;
+const RERENDER_DELAY = 500;
 
 const bodyElement = document.body;
 const pictureTemplate = bodyElement.querySelector('#picture').content.querySelector('.picture');
@@ -51,7 +54,36 @@ const reRenderData = (pictures) => {
   renderThumbnail(pictures);
 };
 
-const eventHandler = (evt, pictures) => {
+const sortData = (data) => {
+  const result = data.slice();
+  result.sort(compareCountComments);
+  return result;
+};
+
+const randomData = (data) => {
+  const result = [];
+  const setIndexs = new Set();
+
+  let thumbnailsCount = 0;
+  let randomIndex = null;
+  while (thumbnailsCount < RANDOM_COUNT_THUMBNAILS) {
+    do {
+      randomIndex = getRandomIntegerFromRange(0, data.length - 1);
+    } while (setIndexs.has(randomIndex));
+    setIndexs.add(randomIndex);
+    result.push(data[randomIndex]);
+    thumbnailsCount++;
+  }
+  return result;
+};
+
+let timeId = null;
+const debounce = (cb, timeout) => {
+  clearTimeout(timeId);
+  timeId = setTimeout(cb, timeout);
+};
+
+const eventHandlerFilter = (evt, pictures) => {
   if ((!evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
 
     const elements = evt.target.parentElement.children;
@@ -61,11 +93,19 @@ const eventHandler = (evt, pictures) => {
 
     evt.target.classList.add('img-filters__button--active');
 
-    if (evt.target === filterDefault) {
-      reRenderData(pictures);
-    } else if (evt.target === filterDiscussed) {
-      const sortPictures = sortData(pictures);
-      reRenderData(sortPictures);
+    switch (evt.target) {
+      case filterDefault:
+        debounce(() => reRenderData(pictures), RERENDER_DELAY);
+        break;
+      case filterDiscussed:
+        debounce(() => reRenderData(sortData(pictures)), RERENDER_DELAY);
+        break;
+      case filterRandom:
+        debounce(() => reRenderData(randomData(pictures)), RERENDER_DELAY);
+        break;
+      default:
+        debounce(() => reRenderData(pictures), RERENDER_DELAY);
+        break;
     }
   }
 };
@@ -75,7 +115,7 @@ const renderData = (data) => {
 
   imgFilters.classList.remove('img-filters--inactive');
   imgFilters.classList.add('img-filters--active');
-  imgFilters.addEventListener('click', (evt) => { eventHandler(evt, data); });
+  imgFilters.addEventListener('click', (evt) => { eventHandlerFilter(evt, data); });
 };
 
 const renderError = (err) => {
