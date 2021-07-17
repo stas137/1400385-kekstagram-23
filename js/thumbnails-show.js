@@ -89,7 +89,7 @@ const setClassButtonActive = (element) => {
   element.classList.add('img-filters__button--active');
 };
 
-const eventClickFilter = (evt, pictures, cb) => {
+const eventHandlerClickFilter = (evt, pictures, cb) => {
   if (!(evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
 
     setClassButtonActive(evt.target);
@@ -115,7 +115,7 @@ const showSortedList = (data) => {
   renderThumbnails(data);
   const showSortedListDelay = debounce(renderThumbnails, RERENDER_DELAY);
   imgFilters.classList.remove('img-filters--inactive');
-  imgFilters.addEventListener('click', (evt) => { eventClickFilter(evt, data, showSortedListDelay); });
+  imgFilters.addEventListener('click', (evt) => { eventHandlerClickFilter(evt, data, showSortedListDelay); });
 };
 
 const renderError = (err) => {
