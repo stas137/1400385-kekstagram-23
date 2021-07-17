@@ -17,4 +17,14 @@ const checkMaxLength = function (str, length) {
 
 const isEscEvent = (code) => code === ESCAPE_CODE;
 
-export {getRandomIntegerFromRange, checkMaxLength, isEscEvent};
+const compareCountComments = (first, second) => second.comments.length - first.comments.length;
+
+const debounce = (cb, timeout) => {
+  let timeId = null;
+  return (data) => {
+    clearTimeout(timeId);
+    timeId = setTimeout(() => cb(data), timeout);
+  };
+};
+
+export {getRandomIntegerFromRange, checkMaxLength, isEscEvent, compareCountComments, debounce};

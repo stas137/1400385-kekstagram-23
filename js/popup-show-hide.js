@@ -2,7 +2,6 @@ import {isEscEvent} from './utils.js';
 import {checkData} from './check-data.js';
 import {sendData} from './api.js';
 
-
 const MAX_SCALE_VALUE = 100;
 const LEVEL_VALUE = 100;
 const EFFECT_NONE = 'effect-none';

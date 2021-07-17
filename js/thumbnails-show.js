@@ -1,34 +1,121 @@
 import {getData} from './api.js';
+import {compareCountComments, getRandomIntegerFromRange, debounce} from './utils.js';
 import {pictureShowFull} from './picture-show-full.js';
 
 const ALERT_SHOW_TIME = 4000;
+const RANDOM_COUNT_THUMBNAILS = 10;
+const RERENDER_DELAY = 500;
 
 const bodyElement = document.body;
 const pictureTemplate = bodyElement.querySelector('#picture').content.querySelector('.picture');
 const picturesList = bodyElement.querySelector('.pictures');
+
+const imgFilters= bodyElement.querySelector('.img-filters');
+const filterDefault = imgFilters.querySelector('#filter-default');
+const filterRandom = imgFilters.querySelector('#filter-random');
+const filterDiscussed = imgFilters.querySelector('#filter-discussed');
 
 const addEventHandler = (evt, picture) => {
   evt.preventDefault();
   pictureShowFull(picture);
 };
 
-const renderData = (pictures) => {
-  const pictureListFragment = document.createDocumentFragment();
+const clearThumbnails = () => {
+  const firstPicture = picturesList.querySelector('.picture');
 
-  pictures.forEach((picture) => {
-    const pictureElement = pictureTemplate.cloneNode(true);
+  if (firstPicture) {
+    for (let index = picturesList.children.length - 1; index >= 0; index--) {
+      if (picturesList.children[index] === firstPicture) {
+        picturesList.children[index].remove();
+        break;
+      }
+      picturesList.children[index].remove();
+    }
+  }
+};
 
-    pictureElement.querySelector('.picture__img').src = picture.url;
-    pictureElement.querySelector('.picture__img').alt = picture.description;
-    pictureElement.querySelector('.picture__likes').textContent = picture.likes;
-    pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
+const renderThumbnails = (pictures) => {
 
-    pictureElement.addEventListener('click', (evt) => { addEventHandler(evt, picture); });
+  clearThumbnails();
 
-    pictureListFragment.appendChild(pictureElement);
-  });
+  if (pictures) {
+    const pictureListFragment = document.createDocumentFragment();
 
-  picturesList.appendChild(pictureListFragment);
+    pictures.forEach((picture) => {
+      const pictureElement = pictureTemplate.cloneNode(true);
+
+      pictureElement.querySelector('.picture__img').src = picture.url;
+      pictureElement.querySelector('.picture__img').alt = picture.description;
+      pictureElement.querySelector('.picture__likes').textContent = picture.likes;
+      pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
+
+      pictureElement.addEventListener('click', (evt) => { addEventHandler(evt, picture); });
+
+      pictureListFragment.appendChild(pictureElement);
+    });
+
+    picturesList.appendChild(pictureListFragment);
+  }
+};
+
+const sortThumbnails = (data) => {
+  const result = data.slice();
+  return result.sort(compareCountComments);
+};
+
+const getRandomThumbnails = (data) => {
+  const result = [];
+  const setIndexs = new Set();
+
+  let thumbnailsCount = 0;
+  let randomIndex = null;
+  while (thumbnailsCount < RANDOM_COUNT_THUMBNAILS) {
+    do {
+      randomIndex = getRandomIntegerFromRange(0, data.length - 1);
+    } while (setIndexs.has(randomIndex));
+    setIndexs.add(randomIndex);
+    result.push(data[randomIndex]);
+    thumbnailsCount++;
+  }
+  return result;
+};
+
+const setClassButtonActive = (element) => {
+  const elements = element.parentElement.children;
+  for (let index = 0; index < elements.length; index ++) {
+    elements[index].classList.remove('img-filters__button--active');
+  }
+
+  element.classList.add('img-filters__button--active');
+};
+
+const eventHandlerClickFilter = (evt, pictures, cb) => {
+  if (!(evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
+
+    setClassButtonActive(evt.target);
+
+    switch (evt.target) {
+      case filterDefault:
+        cb(pictures);
+        break;
+      case filterDiscussed:
+        cb(sortThumbnails(pictures));
+        break;
+      case filterRandom:
+        cb(getRandomThumbnails(pictures));
+        break;
+      default:
+        cb(pictures);
+        break;
+    }
+  }
+};
+
+const showSortedList = (data) => {
+  renderThumbnails(data);
+  const showSortedListDelay = debounce(renderThumbnails, RERENDER_DELAY);
+  imgFilters.classList.remove('img-filters--inactive');
+  imgFilters.addEventListener('click', (evt) => { eventHandlerClickFilter(evt, data, showSortedListDelay); });
 };
 
 const renderError = (err) => {
@@ -53,4 +140,4 @@ const renderError = (err) => {
   setTimeout(() => { alertContainer.remove(); }, ALERT_SHOW_TIME);
 };
 
-getData(renderData, renderError);
+getData(showSortedList, renderError);
