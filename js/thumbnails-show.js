@@ -1,5 +1,5 @@
 import {getData} from './api.js';
-import {compareCountComments, getRandomIntegerFromRange} from './utils.js';
+import {compareCountComments, getRandomIntegerFromRange, debounce} from './utils.js';
 import {pictureShowFull} from './picture-show-full.js';
 
 const ALERT_SHOW_TIME = 4000;
@@ -20,47 +20,50 @@ const addEventHandler = (evt, picture) => {
   pictureShowFull(picture);
 };
 
-const renderThumbnail = (pictures) => {
-  const pictureListFragment = document.createDocumentFragment();
-
-  pictures.forEach((picture) => {
-    const pictureElement = pictureTemplate.cloneNode(true);
-
-    pictureElement.querySelector('.picture__img').src = picture.url;
-    pictureElement.querySelector('.picture__img').alt = picture.description;
-    pictureElement.querySelector('.picture__likes').textContent = picture.likes;
-    pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
-
-    pictureElement.addEventListener('click', (evt) => { addEventHandler(evt, picture); });
-
-    pictureListFragment.appendChild(pictureElement);
-  });
-
-  picturesList.appendChild(pictureListFragment);
-};
-
-const reRenderData = (pictures) => {
-
+const clearThumbnails = () => {
   const firstPicture = picturesList.querySelector('.picture');
 
-  for (let index = picturesList.children.length - 1; index >= 0; index--) {
-    if (picturesList.children[index] === firstPicture) {
+  if (firstPicture) {
+    for (let index = picturesList.children.length - 1; index >= 0; index--) {
+      if (picturesList.children[index] === firstPicture) {
+        picturesList.children[index].remove();
+        break;
+      }
       picturesList.children[index].remove();
-      break;
     }
-    picturesList.children[index].remove();
   }
-
-  renderThumbnail(pictures);
 };
 
-const sortData = (data) => {
+const renderThumbnails = (pictures) => {
+
+  clearThumbnails();
+
+  if (pictures) {
+    const pictureListFragment = document.createDocumentFragment();
+
+    pictures.forEach((picture) => {
+      const pictureElement = pictureTemplate.cloneNode(true);
+
+      pictureElement.querySelector('.picture__img').src = picture.url;
+      pictureElement.querySelector('.picture__img').alt = picture.description;
+      pictureElement.querySelector('.picture__likes').textContent = picture.likes;
+      pictureElement.querySelector('.picture__comments').textContent = picture.comments.length;
+
+      pictureElement.addEventListener('click', (evt) => { addEventHandler(evt, picture); });
+
+      pictureListFragment.appendChild(pictureElement);
+    });
+
+    picturesList.appendChild(pictureListFragment);
+  }
+};
+
+const sortThumbnails = (data) => {
   const result = data.slice();
-  result.sort(compareCountComments);
-  return result;
+  return result.sort(compareCountComments);
 };
 
-const randomData = (data) => {
+const getRandomThumbnails = (data) => {
   const result = [];
   const setIndexs = new Set();
 
@@ -77,45 +80,42 @@ const randomData = (data) => {
   return result;
 };
 
-let timeId = null;
-const debounce = (cb, timeout) => {
-  clearTimeout(timeId);
-  timeId = setTimeout(cb, timeout);
+const setClassButtonActive = (element) => {
+  const elements = element.parentElement.children;
+  for (let index = 0; index < elements.length; index ++) {
+    elements[index].classList.remove('img-filters__button--active');
+  }
+
+  element.classList.add('img-filters__button--active');
 };
 
-const eventHandlerFilter = (evt, pictures) => {
-  if ((!evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
+const eventClickFilter = (evt, pictures, cb) => {
+  if (!(evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
 
-    const elements = evt.target.parentElement.children;
-    for (let index = 0; index < elements.length; index ++) {
-      elements[index].classList.remove('img-filters__button--active');
-    }
-
-    evt.target.classList.add('img-filters__button--active');
+    setClassButtonActive(evt.target);
 
     switch (evt.target) {
       case filterDefault:
-        debounce(() => reRenderData(pictures), RERENDER_DELAY);
+        cb(pictures);
         break;
       case filterDiscussed:
-        debounce(() => reRenderData(sortData(pictures)), RERENDER_DELAY);
+        cb(sortThumbnails(pictures));
         break;
       case filterRandom:
-        debounce(() => reRenderData(randomData(pictures)), RERENDER_DELAY);
+        cb(getRandomThumbnails(pictures));
         break;
       default:
-        debounce(() => reRenderData(pictures), RERENDER_DELAY);
+        cb(pictures);
         break;
     }
   }
 };
 
-const renderData = (data) => {
-  renderThumbnail(data);
-
+const showSortedList = (data) => {
+  renderThumbnails(data);
+  const showSortedListDelay = debounce(renderThumbnails, RERENDER_DELAY);
   imgFilters.classList.remove('img-filters--inactive');
-  imgFilters.classList.add('img-filters--active');
-  imgFilters.addEventListener('click', (evt) => { eventHandlerFilter(evt, data); });
+  imgFilters.addEventListener('click', (evt) => { eventClickFilter(evt, data, showSortedListDelay); });
 };
 
 const renderError = (err) => {
@@ -140,4 +140,4 @@ const renderError = (err) => {
   setTimeout(() => { alertContainer.remove(); }, ALERT_SHOW_TIME);
 };
 
-getData(renderData, renderError);
+getData(showSortedList, renderError);
