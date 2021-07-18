@@ -64,7 +64,7 @@ const sortThumbnails = (data) => {
 };
 
 const getRandomThumbnails = (data) => {
-  const result = [];
+  const randomThumbnails = [];
   const setIndexs = new Set();
 
   let thumbnailsCount = 0;
@@ -74,10 +74,10 @@ const getRandomThumbnails = (data) => {
       randomIndex = getRandomIntegerFromRange(0, data.length - 1);
     } while (setIndexs.has(randomIndex));
     setIndexs.add(randomIndex);
-    result.push(data[randomIndex]);
+    randomThumbnails.push(data[randomIndex]);
     thumbnailsCount++;
   }
-  return result;
+  return randomThumbnails;
 };
 
 const setClassButtonActive = (element) => {

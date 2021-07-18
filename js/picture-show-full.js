@@ -27,7 +27,6 @@ const onEscKeyDown = (evt) => {
 };
 
 const getListItem = (index, comments) => {
-  const divItem = document.createElement('div');
   const listItem = document.createElement('li');
   const imgItem = document.createElement('img');
   const pItem = document.createElement('p');
@@ -37,27 +36,19 @@ const getListItem = (index, comments) => {
   pItem.classList.add('social__text');
   imgItem.src = comments[index].avatar;
   imgItem.alt = comments[index].name;
+  imgItem.width = '35';
+  imgItem.height = '35';
   pItem.textContent = comments[index].message;
 
   listItem.append(imgItem);
   listItem.append(pItem);
-  divItem.append(listItem);
-  return divItem.innerHTML;
-/*   `<li class="social__comment">
-  <img class="social__picture"
-    src="${comments[index].avatar}"
-    alt="${comments[index].name}"
-    width="35" height="35">
-  <p class="social__text">${comments[index].message}</p>
-  </li>` */
+  return listItem;
 };
 
 const renderSocialComments = (picture, indexFrom, indexTo) => {
-  let listSocialComments = '';
   for (let index = indexFrom; index < indexTo; index++) {
-    listSocialComments += getListItem(index, picture.comments);
+    socialComments.append(getListItem(index, picture.comments));
   }
-  socialComments.insertAdjacentHTML('beforeend', listSocialComments);
 };
 
 const loadComments = (picture, indexFrom = 0, indexTo = COMMENT_COUNT_SHOW) => {

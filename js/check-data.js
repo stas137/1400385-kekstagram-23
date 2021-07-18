@@ -64,48 +64,47 @@ const checkHashtagsCharSharp = (value) => {
 };
 
 const checkHashtagsValidity = (value) => {
-  const invalidities = [];
+  const listErrors = [];
   const hashtags = getHashtags(value);
-  const hashtagsLowerCase = getHashtagsLowerCase(hashtags);
-  const hashtagsUnique = [...new Set(hashtagsLowerCase)];
+  const listUniqueHashtags = [...new Set(getHashtagsLowerCase(hashtags))];
 
   if (!value) {
-    return invalidities;
+    return listErrors;
   }
 
   if (value.length >= HASHTAGS_LENGTH) {
-    invalidities.push('Превышена максимальная длина всех хэштегов');
+    listErrors.push('Превышена максимальная длина всех хэштегов');
   }
 
   if (hashtags.length > HASHTAGS_COUNT) {
-    invalidities.push(`Количество хэштегов не должно превышать ${HASHTAGS_COUNT}`);
+    listErrors.push(`Количество хэштегов не должно превышать ${HASHTAGS_COUNT}`);
   }
 
-  if (hashtags.length !== hashtagsUnique.length) {
-    invalidities.push('Есть повторяющиеся хэштеги');
+  if (hashtags.length !== listUniqueHashtags.length) {
+    listErrors.push('Есть повторяющиеся хэштеги');
   }
 
   if (checkHashtagsMaxLength(hashtags)) {
-    invalidities.push(`Есть хэштеги с длиной больше, чем ${HASHTAG_MAX_LENGTH} символов`);
+    listErrors.push(`Есть хэштеги с длиной больше, чем ${HASHTAG_MAX_LENGTH} символов`);
   }
 
   if (checkHashtagsMinLength(hashtags)) {
-    invalidities.push(`Есть хэштеги с длиной меньше, чем ${HASHTAG_MIN_LENGTH} символа`);
+    listErrors.push(`Есть хэштеги с длиной меньше, чем ${HASHTAG_MIN_LENGTH} символа`);
   }
 
   if (checkHashtagsFirstChar(hashtags)) {
-    invalidities.push('Есть хэштеги начинающиеся не с символа "#"');
+    listErrors.push('Есть хэштеги начинающиеся не с символа "#"');
   }
 
   if (checkHashtagsCharSharp(hashtags)) {
-    invalidities.push('Есть хэштеги состоящие только из символа "#"');
+    listErrors.push('Есть хэштеги состоящие только из символа "#"');
   }
 
   if (!isHashtagsCorrect(hashtags)) {
-    invalidities.push('Есть хэштеги состоящие не только из символов букв и цифр');
+    listErrors.push('Есть хэштеги состоящие не только из символов букв и цифр');
   }
 
-  return invalidities;
+  return listErrors;
 };
 
 const itemSetCustomValidity = (item, message) => {

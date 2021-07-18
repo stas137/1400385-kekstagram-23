@@ -14,18 +14,16 @@ const getData = (onSuccess, onError) => fetch(URL_GET, {
   .then((data) => onSuccess(data))
   .catch((err) => onError(err));
 
-const sendData = (onSuccess, onError, formData) => {
-  fetch(URL_POST, {
-    method: 'POST',
-    body: formData,
+const sendData = (onSuccess, onError, formData) => fetch(URL_POST, {
+  method: 'POST',
+  body: formData,
+})
+  .then((response) => {
+    if (response.ok) {
+      return onSuccess();
+    }
+    throw new Error('Ошибка загрузки файла!');
   })
-    .then((response) => {
-      if (response.ok) {
-        return onSuccess();
-      }
-      throw new Error('Ошибка загрузки файла!');
-    })
-    .catch((err) => onError(err));
-};
+  .catch((err) => onError(err));
 
 export {getData, sendData};

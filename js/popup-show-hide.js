@@ -119,11 +119,11 @@ const popupShowHide = () => {
   };
 
   const uploadImg = (file) => {
-    const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+    const FILES_TYPES = ['jpg', 'jpeg', 'png'];
     const imgFile = file;
     const fileName = file.name.toLowerCase();
 
-    const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
+    const matches = FILES_TYPES.some((elem) => fileName.endsWith(elem));
 
     if (matches) {
       const readerFile = new FileReader();
