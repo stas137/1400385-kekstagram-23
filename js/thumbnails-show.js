@@ -89,25 +89,24 @@ const setClassButtonActive = (element) => {
   element.classList.add('img-filters__button--active');
 };
 
-const handleClickFilter = (evt, pictures, cb) => {
-  if (!(evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
-
+const handleClickFilterDefault = (evt, pictures, cb) => {
+  if (!evt.target.classList.contains('img-filters__button--active')) {
     setClassButtonActive(evt.target);
+    cb(pictures);
+  }
+};
 
-    switch (evt.target) {
-      case filterDefault:
-        cb(pictures);
-        break;
-      case filterDiscussed:
-        cb(sortThumbnails(pictures));
-        break;
-      case filterRandom:
-        cb(getRandomThumbnails(pictures));
-        break;
-      default:
-        cb(pictures);
-        break;
-    }
+const handleClickFilterRandom = (evt, pictures, cb) => {
+  if (!evt.target.classList.contains('img-filters__button--active')) {
+    setClassButtonActive(evt.target);
+    cb(getRandomThumbnails(pictures));
+  }
+};
+
+const handleClickFilterDiscussed = (evt, pictures, cb) => {
+  if (!evt.target.classList.contains('img-filters__button--active')) {
+    setClassButtonActive(evt.target);
+    cb(sortThumbnails(pictures));
   }
 };
 
@@ -115,7 +114,10 @@ const showSortedList = (data) => {
   renderThumbnails(data);
   const showSortedListDelay = debounce(renderThumbnails, RERENDER_DELAY);
   imgFilters.classList.remove('img-filters--inactive');
-  imgFilters.addEventListener('click', (evt) => { handleClickFilter(evt, data, showSortedListDelay); });
+
+  filterDefault.addEventListener('click', (evt) => { handleClickFilterDefault(evt, data, showSortedListDelay); });
+  filterRandom.addEventListener('click', (evt) => { handleClickFilterRandom(evt, data, showSortedListDelay); });
+  filterDiscussed.addEventListener('click', (evt) => { handleClickFilterDiscussed(evt, data, showSortedListDelay); });
 };
 
 const renderError = (err) => {
