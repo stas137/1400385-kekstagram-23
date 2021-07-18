@@ -1,5 +1,7 @@
 import {isEscEvent} from './utils.js';
 
+const COMMENT_COUNT_SHOW = 5;
+
 const bodyElement = document.body;
 const bigPicture = bodyElement.querySelector('.big-picture');
 const bigPictureImg = bodyElement.querySelector('.big-picture__img');
@@ -24,23 +26,41 @@ const onEscKeyDown = (evt) => {
   }
 };
 
-const getListItem = (index, comments) => `<li class="social__comment">
-<img
-  class="social__picture"
-  src="${comments[index].avatar}"
-  alt="${comments[index].name}"
-  width="35" height="35">
-<p class="social__text">${comments[index].message}</p>
-</li>`;
+const getListItem = (index, comments) => {
+  const divItem = document.createElement('div');
+  const listItem = document.createElement('li');
+  const imgItem = document.createElement('img');
+  const pItem = document.createElement('p');
 
-const renderSocialComments = (picture, indexFrom, indexTo) => {
-  for (let index = indexFrom; index < indexTo; index++) {
-    socialComments.insertAdjacentHTML('beforeend', getListItem(index, picture.comments));
-  }
+  listItem.classList.add('social__comment');
+  imgItem.classList.add('social__picture');
+  pItem.classList.add('social__text');
+  imgItem.src = comments[index].avatar;
+  imgItem.alt = comments[index].name;
+  pItem.textContent = comments[index].message;
+
+  listItem.append(imgItem);
+  listItem.append(pItem);
+  divItem.append(listItem);
+  return divItem.innerHTML;
+/*   `<li class="social__comment">
+  <img class="social__picture"
+    src="${comments[index].avatar}"
+    alt="${comments[index].name}"
+    width="35" height="35">
+  <p class="social__text">${comments[index].message}</p>
+  </li>` */
 };
 
-const loadComments = (picture, indexFrom = 0, indexTo = 5) => {
-  const COMMENT_COUNT_SHOW = 5;
+const renderSocialComments = (picture, indexFrom, indexTo) => {
+  let listSocialComments = '';
+  for (let index = indexFrom; index < indexTo; index++) {
+    listSocialComments += getListItem(index, picture.comments);
+  }
+  socialComments.insertAdjacentHTML('beforeend', listSocialComments);
+};
+
+const loadComments = (picture, indexFrom = 0, indexTo = COMMENT_COUNT_SHOW) => {
   const commentsLoader = bodyElement.querySelector('.comments-loader');
   const commentsLoaderClone = commentsLoader.cloneNode(true);
   commentsLoader.replaceWith(commentsLoaderClone);

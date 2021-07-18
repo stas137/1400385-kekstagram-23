@@ -89,7 +89,7 @@ const setClassButtonActive = (element) => {
   element.classList.add('img-filters__button--active');
 };
 
-const eventHandlerClickFilter = (evt, pictures, cb) => {
+const handleClickFilter = (evt, pictures, cb) => {
   if (!(evt.target.classList.contains('img-filters__button--active')) && (evt.target.closest('button'))) {
 
     setClassButtonActive(evt.target);
@@ -115,7 +115,7 @@ const showSortedList = (data) => {
   renderThumbnails(data);
   const showSortedListDelay = debounce(renderThumbnails, RERENDER_DELAY);
   imgFilters.classList.remove('img-filters--inactive');
-  imgFilters.addEventListener('click', (evt) => { eventHandlerClickFilter(evt, data, showSortedListDelay); });
+  imgFilters.addEventListener('click', (evt) => { handleClickFilter(evt, data, showSortedListDelay); });
 };
 
 const renderError = (err) => {
@@ -133,7 +133,9 @@ const renderError = (err) => {
   alertContainer.style.fontSize = '20px';
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = 'red';
-  alertContainer.innerHTML = `Ошибка!<br/>${err}`;
+  alertContainer.append(document.createTextNode('Ошибка!'));
+  alertContainer.append(document.createElement('<br>'));
+  alertContainer.append(document.createTextNode(err.toString()));
 
   bodyElement.append(alertContainer);
 
